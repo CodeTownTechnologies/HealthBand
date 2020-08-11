@@ -12,7 +12,8 @@ import {
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
-
+//import our Custom menu component
+import CustomMenuIcon from './custommenu/CustomMenuIcon';
 
 
 class DashboardActivity extends Component {
@@ -50,9 +51,39 @@ class DashboardActivity extends Component {
                 <View style={styles.headerView}>
 
 
-                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
+                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .8 }}>
 
                         <Text style={styles.screentitle}>Smart Wristband</Text>
+
+                    </TouchableOpacity>
+                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .2 }}>
+                     
+
+                        <CustomMenuIcon
+                            //Menu Text
+                            menutext="Menu"
+                            //Menu View Style
+                            menustyle={{
+                                marginRight: 5,
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                            }}
+                            //Menu Text Style
+                            textStyle={{
+                                color: 'white',
+                            }}
+                            //Click functions for the menu items
+                            option1Click={() => {
+                              
+                                 this.props.navigation.navigate('AddBluetoothDevice') 
+                              
+                
+                            }}
+                            option2Click={() => {
+                                this.props.navigation.navigate('BluetoothDeviceList') 
+                             }}
+                          
+                        />
 
                     </TouchableOpacity>
 
@@ -61,53 +92,40 @@ class DashboardActivity extends Component {
 
 
                 <View style={styles.container}>
+
                     <View style={styles.row}>
                         <View style={styles.tempbox}>
 
                             <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#F5AB3F', alignItems: 'center', alignSelf: 'center' }}>
 
 
-                                <Text style={styles.boxtitle}>Live Temprature</Text>
+                                <Text style={styles.boxtitle}>Temprature</Text>
 
 
                             </View>
 
-                            <View style={{ flex: .8, flexDirection: 'row', width: '100%', backgroundColor: '#F29600' }}>
+                            <View style={{
+                                flex: .8, flexDirection: 'row', backgroundColor: '#F29600', borderBottomLeftRadius: 20,
+                                borderBottomRightRadius: 20
+                            }}>
 
 
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
-
-
-                                    <Text style={styles.screentitle}>MAX</Text>
-                                    <Text style={styles.screentitle}>89.60</Text>
-
-
-
-                                </View>
-
-                                <View
-                                    style={{
-                                        borderLeftWidth: 1,
-                                        borderLeftColor: 'white',
-                                    }}
-                                />
-
-
-
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
-
-                                    <Text style={styles.screentitle}>MIN</Text>
-                                    <Text style={styles.screentitle}>89.60</Text>
-
-
-
-                                </View>
-
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
+                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
 
                                     <Image source={require('../images/thermometer.png')}
                                         style={styles.iconstyle} />
+
+                                </View>
+
+
+
+
+                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+
+
+                                    <Text style={styles.screentitle}>94.03 F</Text>
+
 
 
                                 </View>
@@ -126,48 +144,44 @@ class DashboardActivity extends Component {
                             <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#F67A96', alignItems: 'center', alignSelf: 'center' }}>
 
 
-                                <Text style={styles.boxtitle}>Live Heart Rate(8 PM)</Text>
+                                <Text style={styles.boxtitle}>Heart Rate</Text>
 
 
                             </View>
 
-                            <View style={{ flex: .8, flexDirection: 'row', width: '100%', backgroundColor: '#EE3364' }}>
+                            <View style={{
+                                flex: .8, flexDirection: 'row', backgroundColor: '#EE3364', borderBottomLeftRadius: 20,
+                                borderBottomRightRadius: 20
+                            }}>
 
 
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
+                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
-
-                                    <Text style={styles.screentitle}>MAX</Text>
-                                    <Text style={styles.screentitle}>64</Text>
-
-
-
-                                </View>
-
-                                <View
-                                    style={{
-                                        borderLeftWidth: 1,
-                                        borderLeftColor: 'white',
-                                    }}
-                                />
-
-
-
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
-
-                                    <Text style={styles.screentitle}>MIN</Text>
-                                    <Text style={styles.screentitle}>64</Text>
-
-
-
-                                </View>
-
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
 
 
                                     <Image source={require('../images/cardiogram.png')}
                                         style={styles.iconstyle} />
 
+
+                                </View>
+
+                                {/* <View
+                                    style={{
+                                        borderLeftWidth: 1,
+                                        borderLeftColor: 'white',
+                                    }}
+                                /> */}
+
+
+
+
+
+                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+
+
+
+
+                                    <Text style={styles.screentitle}>74 bpm</Text>
 
                                 </View>
 
@@ -185,49 +199,40 @@ class DashboardActivity extends Component {
                             <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#FD835E', alignItems: 'center', alignSelf: 'center' }}>
 
 
-                                <Text style={styles.boxtitle}>Live Blood Oxygen (SPO2)%</Text>
+                                <Text style={styles.boxtitle}>Blood Oxygen SPO2</Text>
 
 
                             </View>
-                            <View style={{ flex: .8, flexDirection: 'row', width: '100%', backgroundColor: '#FB6230' }}>
+                            <View style={{
+                                flex: .8, flexDirection: 'row', backgroundColor: '#FB6230', borderBottomLeftRadius: 20,
+                                borderBottomRightRadius: 20
+                            }}>
 
 
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
+                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
 
-                                    <Text style={styles.screentitle}>MAX</Text>
-                                    <Text style={styles.screentitle}>95%</Text>
 
-
+                                    <Image source={require('../images/blood-drop.png')}
+                                        style={styles.iconstyle} />
 
                                 </View>
 
-                                <View
+                                {/* <View
                                     style={{
                                         borderLeftWidth: 1,
                                         borderLeftColor: 'white',
                                     }}
                                 />
 
+ */}
 
 
-                                <View style={{ flex: .33, flexDirection: 'column', justifyContent: 'center' }}>
+                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
-                                    <Text style={styles.screentitle}>MIN</Text>
-                                    <Text style={styles.screentitle}>95%</Text>
-
+                                    <Text style={styles.screentitle}>96%</Text>
 
 
-                                </View>
-
-                                <View style={{ flex: .33, flexDirection: 'row', justifyContent: 'center' }}>
-
-
-                                    {/* <Image source={require('../images/cardiogram.png')}
-                                        style={styles.iconstyle} /> */}
-
-                                    <Text style={styles.o2title}>0</Text>
-                                    <Text style={styles.o2text}>2</Text>
 
                                 </View>
 
@@ -260,7 +265,7 @@ class DashboardActivity extends Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('MyVideos') }}>
+                        onPress={() => { this.props.navigation.navigate('TempratureHistoryTab') }}>
 
                         <Image source={require('../images/history_inactive-2.png')}
                             style={styles.StyleVideoTab} />
@@ -502,14 +507,23 @@ const styles = StyleSheet.create({
         backgroundColor: '#F29600',
         flexDirection: 'column',
         flex: 1,
+        margin: 5,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20
     },
     heartbox: {
         backgroundColor: '#EE3364',
-        flex: 1
+        flex: 1,
+        margin: 5,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20
     },
     blodbox: {
         backgroundColor: '#FB6230',
-        flex: 1
+        flex: 1,
+        margin: 5,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20
     },
     boxtitle: {
         color: "white",
@@ -533,7 +547,7 @@ const styles = StyleSheet.create({
         color: "white",
         fontSize: 100,
         textAlign: 'center',
-        justifyContent:'center',
+        justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
     },

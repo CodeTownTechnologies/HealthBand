@@ -6,10 +6,11 @@ import LoginActivity from './screens/LoginActivity';
 import SignupActivity from './screens/SignupActivity';
 import DashboardActivity from './screens/DashboardActivity';
 import NotificationActivity from './screens/NotificationActivity';
+import TempratureHistoryTabActivity from './screens/HistoryTabs/TempratureHistoryTab';
+import InteractionHistoryTabActivity from './screens/HistoryTabs/InteractionHistoryTab';
+import AddBluetoothDeviceActivity from './screens/AddBluetoothDeviceActivity';
+import BluetoothDeviceListActivity from './screens/BluetoothDeviceListActivity';
 import SettingsActivity from './screens/SettingsActivity';
-import MyVideosActivity from './screens/MyVideosActivity';
-
-
 
 const NavStack = createStackNavigator(
     {
@@ -18,9 +19,13 @@ const NavStack = createStackNavigator(
         Signup: { screen: SignupActivity },
         Dashboard: { screen: DashboardActivity },
         Notification: { screen: NotificationActivity },
-        Settings: { screen: SettingsActivity },
-        MyVideos : {screen : MyVideosActivity}
-       
+        TempratureHistoryTab: { screen: TempratureHistoryTabActivity },
+        InteractionHistoryTab: { screen: InteractionHistoryTabActivity },
+        AddBluetoothDevice: { screen: AddBluetoothDeviceActivity },
+        BluetoothDeviceList: { screen: BluetoothDeviceListActivity },
+        Settings: { screen: SettingsActivity }
+      
+
         
     },
     {

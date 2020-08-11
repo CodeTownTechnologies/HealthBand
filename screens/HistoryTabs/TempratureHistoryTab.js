@@ -11,7 +11,7 @@ import {
     ImageBackground
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
-import stringsoflanguages from '../screens/locales/stringsoflanguages';
+import stringsoflanguages from '../locales/stringsoflanguages';
 
 
 function Item({ item }) {
@@ -20,24 +20,35 @@ function Item({ item }) {
             <View style={styles.listItemStyle}>
                 <View style={{ flex: 1, marginLeft: 10, padding: 10 }}>
 
-                    <View style={{ flex: 1, flexDirection: 'row' }}>
-
-                        <View style={styles.circle}>
+                    <View style={{ flex: 1, flexDirection: 'column' }}>
 
 
-                            <Text style={{ color: 'white', textAlign: 'center', fontSize: RFPercentage(1.9), fontWeight: 'bold', justifyContent: 'center' }}>+1</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', justifyContent: 'center' }}>
 
+                            <Text style={{ color: 'black', fontSize: RFValue(12, 580) , textAlign: 'left', flex: .5 }}>Temprature</Text>
+                            <Text style={{ color: '#949494', fontSize: RFValue(12, 580), textAlign: 'right', flex: .5 }}>94.03 F</Text>
 
                         </View>
 
-                        <View style={{ flex: .70, flexDirection: 'column', justifyContent: 'center', marginLeft: 10 }}>
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', justifyContent: 'center' }}>
 
-                            <Text style={{ color: 'black', fontSize: RFValue(14, 580) }}>{item.title}</Text>
+                            <Text style={{ color: 'black', fontSize: RFValue(12, 580), textAlign: 'left', flex: .5 }}>Heart Rate</Text>
+                            <Text style={{ color: '#949494', fontSize: RFValue(12, 580), textAlign: 'right', flex: .5 }}>74 bpm</Text>
+
                         </View>
+
+
+                        <View style={{ flexDirection: 'row', justifyContent: 'center', justifyContent: 'center' }}>
+
+                            <Text style={{ color: 'black', fontSize: RFValue(12, 580), textAlign: 'left', flex: .5 }}>Blood Oxygen (SPO2)</Text>
+                            <Text style={{ color: '#949494', fontSize: RFValue(12, 580), textAlign: 'right', flex: .5 }}>96%</Text>
+
+                        </View>
+
 
                     </View>
 
-                    <Text style={{ color: '#808080', fontSize: RFValue(12, 580) }}>{item.name}</Text>
+                    
                     <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.time}</Text>
                 </View>
 
@@ -47,7 +58,7 @@ function Item({ item }) {
 }
 
 
-class NotificationActivity extends Component {
+class TempratureHistoryTab extends Component {
 
     constructor(props) {
         super(props);
@@ -56,53 +67,53 @@ class NotificationActivity extends Component {
             //    baseUrl: 'https://digimonk.co/fitness/api/Api/videoList',
             data: [
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "office",
                     "time": "01/05/2020 12:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "office",
                     "time": "02/05/2020 1:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "office",
                     "time": "03/05/2020 2:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "04/05/2020 3:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "05/05/2020 4:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "06/05/2020 5:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "07/05/2020 6:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "08/05/2020 7:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "09/05/2020 8:00 AM",
                 },
                 {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
+                    "title": "Arjun Kumar",
+                    "name": "canteen",
                     "time": "10/05/2020 9:00 AM",
                 },
             ]
@@ -127,49 +138,6 @@ class NotificationActivity extends Component {
 
     }
 
-    // videoList() {
-
-    //     var url = this.state.baseUrl;
-    //     console.log('url:' + url);
-    //     fetch(url, {
-    //       method: 'GET',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     //   body: JSON.stringify({
-    //     //     secure_pin: 'digimonk',
-    //     //     customer_id: this.state.userId
-    //     //   }),
-    //     })
-    //       .then(response => response.json())
-    //       .then(responseData => {
-    //         this.hideLoading();
-    //         if (responseData.status == '0') {
-    //           alert(responseData.message);
-    //         } else {
-    //           this.setState({ data: responseData.data});
-    //         }
-
-    //         console.log('response object:', responseData);
-    //       })
-    //       .catch(error => {
-    //         this.hideLoading();
-    //         console.error(error);
-    //       })
-
-    //       .done();
-    //   }
-
-    actionOnRow(item) {
-
-        // this.props.navigation.navigate('QuestionLogDetail', {
-        //   item: item,
-        //   question_id: item.question_id
-        // })
-
-        // console.log('Selected Item :', item);
-
-    }
 
     render() {
         return (
@@ -178,8 +146,7 @@ class NotificationActivity extends Component {
                 <View style={styles.headerView}>
 
 
-                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}
-                    >
+                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: 1 }}>
 
                         <Text style={styles.screentitle}>Smart Wristband</Text>
 
@@ -187,25 +154,34 @@ class NotificationActivity extends Component {
 
                 </View>
 
+                <View style={{ flexDirection: 'row' }}>
+
+                    <TouchableOpacity
+                        style={styles.activetabStyle}>
 
 
-                {/* 
-                <ScrollView
-                    refreshControl={
-                        <RefreshControl 
-                            refreshing={this.state.refresh}
-                            onRefresh={() => this.onRefresh()}
-                            tintColor='#FFC33B'
-                        />
-                    }> */}
+                        <Text style={styles.activeTabTextStyle}>Temp/HR.SPO2</Text>
+
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.inactivetabStyle}
+                        onPress={() => { this.props.navigation.navigate('InteractionHistoryTab') }}>
+
+
+                        <Text style={styles.inactiveTabTextStyle}>Interactions History</Text>
+
+                    </TouchableOpacity>
+
+                </View>
+
 
                 <FlatList
                     style={{ flex: 1 }}
                     data={this.state.data}
 
                     renderItem={({ item }) => (
-
-                        <TouchableWithoutFeedback onPress={() => this.actionOnRow(item)}>
+                        <TouchableWithoutFeedback>
 
                             <View>
                                 <Item item={item} />
@@ -225,7 +201,7 @@ class NotificationActivity extends Component {
                     <TouchableOpacity style={styles.tabButtonStyle}
                         onPress={() => { this.props.navigation.navigate('Dashboard') }}>
 
-                        <Image source={require('../images/home_inactive.png')}
+                        <Image source={require('../../images/home_inactive.png')}
                             style={styles.StyleHomeTab} />
 
                         <Text style={styles.bottominactivetextstyle}>{stringsoflanguages.Home}</Text>
@@ -233,9 +209,9 @@ class NotificationActivity extends Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('TempratureHistoryTab') }}>
+                        onPress={() => { this.props.navigation.navigate('MyVideos') }}>
 
-                        <Image source={require('../images/history_inactive-2.png')}
+                        <Image source={require('../../images/history_active.png')}
                             style={styles.StyleVideoTab} />
 
                         <Text style={styles.bottomvideotextstyle}>{stringsoflanguages.my_videos}</Text>
@@ -251,7 +227,7 @@ class NotificationActivity extends Component {
                     <TouchableOpacity style={styles.tabButtonStyle}
                         onPress={() => { this.props.navigation.navigate('Notification') }}>
 
-                        <Image source={require('../images/bell_inactive.png')}
+                        <Image source={require('../../images/bell_inactive.png')}
                             style={styles.styleNotificationTab} />
 
                         <Text style={styles.bottomnotificationtextstyle}>{stringsoflanguages.notification_small}</Text>
@@ -262,7 +238,7 @@ class NotificationActivity extends Component {
                     <TouchableOpacity style={styles.tabButtonStyle}
                         onPress={() => { this.props.navigation.navigate('Settings') }}>
 
-                        <Image source={require('../images/setting_inactive.png')}
+                        <Image source={require('../../images/setting_inactive.png')}
                             style={styles.StyleProfileTab} />
 
                         <Text style={styles.bottominactivetextstyle}>{stringsoflanguages.settings}</Text>
@@ -343,7 +319,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     bottomvideotextstyle: {
-        color: "#887F82",
+        color: "#0081C9",
         fontSize: 8,
         marginTop: 3,
         textAlign: 'center',
@@ -353,12 +329,12 @@ const styles = StyleSheet.create({
         width: 25,
         height: 30,
         alignSelf: 'center',
-        tintColor: '#0081C9',
         alignItems: 'center',
         justifyContent: 'center',
     },
+
     bottomnotificationtextstyle: {
-        color: "#0081C9",
+        color: "#887F82",
         fontSize: 8,
         marginTop: 3,
         textAlign: 'center'
@@ -443,7 +419,43 @@ const styles = StyleSheet.create({
         borderRadius: 150 / 2,
         backgroundColor: '#F29600',
     },
+    activetabStyle: {
+        marginTop: 10,
+        flex: .5,
+        height: 40,
+        margin: 5,
+        backgroundColor: '#0081C9',
+        borderRadius: 2,
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center'
+    },
+    inactivetabStyle: {
+        marginTop: 10,
+        flex: .5,
+        height: 40,
+        margin: 5,
+        backgroundColor: 'white',
+        borderRadius: 2,
+        borderWidth: 2,
+        borderColor: '#0081C9',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        alignItems: 'center'
+    },
+    activeTabTextStyle: {
+        textAlign: 'center',
+        fontSize: 16,
+        color: 'white',
+        alignContent: 'center',
+    },
+    inactiveTabTextStyle: {
+        textAlign: 'center',
+        fontSize: 16,
+        color: '#0081C9',
+        alignContent: 'center',
+    },
 });
 
-export default NotificationActivity;
+export default TempratureHistoryTab;
 

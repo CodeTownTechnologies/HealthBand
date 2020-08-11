@@ -7,6 +7,7 @@ import {
     ActivityIndicator
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 class SplashActivity extends Component {
@@ -49,13 +50,13 @@ class SplashActivity extends Component {
         this.timeoutHandle = setTimeout(() => {
             // Add your logic for the transition
 
-            // AsyncStorage.getItem('@is_login').then((isLogin) => {
-            //     if (isLogin == undefined || isLogin == "0") {
-            //         this.props.navigation.navigate('Login')
-            //     } else if (isLogin == "1") {
-                   this.props.navigation.navigate('Login')
-               // }
-        //    });
+            AsyncStorage.getItem('@is_login').then((isLogin) => {
+                if (isLogin == undefined || isLogin == "0") {
+                    this.props.navigation.navigate('Login')
+                } else if (isLogin == "1") {
+                   this.props.navigation.navigate('Dashboard')
+               }
+           });
 
 
         }, 4000);
@@ -78,7 +79,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'white'
+        backgroundColor: '#0381CA'
 
     },
     imgBackground: {

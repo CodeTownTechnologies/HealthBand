@@ -11,13 +11,16 @@ import {
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
+import AsyncStorage from '@react-native-community/async-storage';
+import DeviceInfo from 'react-native-device-info';
 
-
+var deviceId;
 
 class SettingsActivity extends Component {
 
     constructor(props) {
         super(props);
+        this.logoutcall = this.logoutcall.bind(this);
         this.state = {
             tempstatus: false,
             tempstatusvalue: 'Low',
@@ -28,8 +31,10 @@ class SettingsActivity extends Component {
             syncstatus: true,
             syncstatusvalue: 'Yes',
             bluetoothstatus: true,
-            bluetoothstatusvalue: 'ON'
+            bluetoothstatusvalue: 'ON',
+            logouturl: 'http://process.trackany.live/mobileapp/native/logout.php?',
 
+ 
         };
     }
 
@@ -48,6 +53,8 @@ class SettingsActivity extends Component {
 
     componentDidMount() {
 
+
+        
     }
 
 
@@ -204,7 +211,44 @@ class SettingsActivity extends Component {
     }
 
 
+    logoutcall() {
+        deviceId = DeviceInfo.getUniqueId();
+        console.log('device id ===' + deviceId)
 
+        let formdata = new FormData();
+
+        formdata.append('device_id', deviceId)
+        formdata.append('token', '1234')
+
+        var url = this.state.logouturl;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formdata
+        }).then((response) => response.json())
+            .then(responseJson => {
+                this.hideLoading();
+
+                console.log("response json===" + JSON.stringify(responseJson))
+                AsyncStorage.setItem('@is_login', '0');
+
+                this.props.navigation.navigate('Login')
+
+             
+
+            }).catch(err => {
+                this.hideLoading();
+                console.log(err)
+            })
+
+    }
+
+
+
+   
 
 
 
@@ -233,7 +277,7 @@ class SettingsActivity extends Component {
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}>
 
-                        <TouchableOpacity style={{
+                        <View style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
@@ -244,32 +288,38 @@ class SettingsActivity extends Component {
                             />
 
 
-                        </TouchableOpacity>
+                        </View>
 
 
-                        <TouchableOpacity style={{ flex: .60 }}
+                        <View style={{ flex: .40 }}
                             onPress={() => { }} >
 
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.tempstatusvalue}</Text>
+                            {/* <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.tempstatusvalue}</Text> */}
 
 
-                        </TouchableOpacity>
+                        </View>
 
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                        <View style={{ flex: .45, marginRight: 20}}
                             onPress={() => { }} >
 
-                            <Switch
-                                onValueChange={this.toggletempstatus}
-                                value={this.state.tempstatus} />
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                            }}>
 
-                        </TouchableOpacity>
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110.0F</Text>
+
+                            </View>
+
+
+                        </View>
 
                     </View>
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
+                            borderBottomColor: 'grey',
                             borderBottomWidth: 1,
+                            opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -278,7 +328,7 @@ class SettingsActivity extends Component {
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}>
 
-                        <TouchableOpacity style={{
+                        <View style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
@@ -289,32 +339,42 @@ class SettingsActivity extends Component {
                             />
 
 
-                        </TouchableOpacity>
+                        </View>
 
 
-                        <TouchableOpacity style={{ flex: .60 }}
+                        <View style={{ flex: .40, margin: 10 }}
                             onPress={() => { }} >
 
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.heartstatusvalue}</Text>
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                            }}>
+
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>50</Text>
+
+                            </View>
 
 
-                        </TouchableOpacity>
+                        </View>
 
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                        <View style={{ flex: .40, margin: 10 }}
                             onPress={() => { }} >
 
-                            <Switch
-                                onValueChange={this.toggleheartstatus}
-                                value={this.state.heartstatus} />
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                            }}>
 
-                        </TouchableOpacity>
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110</Text>
+
+                            </View>
+                        </View>
 
                     </View>
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
+                            borderBottomColor: 'grey',
                             borderBottomWidth: 1,
+                            opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -323,7 +383,7 @@ class SettingsActivity extends Component {
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}>
 
-                        <TouchableOpacity style={{
+                        <View style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
@@ -334,32 +394,43 @@ class SettingsActivity extends Component {
                             />
 
 
-                        </TouchableOpacity>
+                        </View>
 
 
-                        <TouchableOpacity style={{ flex: .60 }}
+
+                        <View style={{ flex: .40, margin: 10 }}
                             onPress={() => { }} >
 
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.spo2statusvalue}</Text>
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                            }}>
+
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>91</Text>
+
+                            </View>
 
 
-                        </TouchableOpacity>
+                        </View>
 
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                        <View style={{ flex: .40, margin: 10 }}
                             onPress={() => { }} >
 
-                            <Switch
-                                onValueChange={this.togglespo2status}
-                                value={this.state.spo2status} />
+                            <View style={{
+                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                            }}>
 
-                        </TouchableOpacity>
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>100</Text>
+
+                            </View>
+                        </View>
 
                     </View>
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
+                            borderBottomColor: 'grey',
                             borderBottomWidth: 1,
+                            opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -369,7 +440,7 @@ class SettingsActivity extends Component {
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}>
 
-                        <TouchableOpacity style={{
+                        <View style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
@@ -380,7 +451,7 @@ class SettingsActivity extends Component {
                             />
 
 
-                        </TouchableOpacity>
+                        </View>
 
 
                         <TouchableOpacity style={{ flex: .60 }}
@@ -405,8 +476,9 @@ class SettingsActivity extends Component {
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
-                            borderBottomWidth: 1,
+                            borderBottomColor: 'grey',
+                            borderBottomWidth: 1, 
+                             opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -415,7 +487,7 @@ class SettingsActivity extends Component {
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}>
 
-                        <TouchableOpacity style={{
+                        <View style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
@@ -426,7 +498,7 @@ class SettingsActivity extends Component {
                             />
 
 
-                        </TouchableOpacity>
+                        </View>
 
 
                         <TouchableOpacity style={{ flex: .60 }}
@@ -451,8 +523,9 @@ class SettingsActivity extends Component {
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
+                            borderBottomColor: 'grey',
                             borderBottomWidth: 1,
+                            opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -461,7 +534,7 @@ class SettingsActivity extends Component {
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}>
 
-                        <TouchableOpacity style={{
+                        <View style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
@@ -472,7 +545,7 @@ class SettingsActivity extends Component {
                             />
 
 
-                        </TouchableOpacity>
+                        </View>
 
 
                         <TouchableOpacity style={{ flex: .60 }}
@@ -497,8 +570,9 @@ class SettingsActivity extends Component {
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
+                            borderBottomColor: 'grey',
                             borderBottomWidth: 1,
+                            opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -506,13 +580,13 @@ class SettingsActivity extends Component {
                     <TouchableOpacity style={{
                         flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                     }}
-                        onPress={() => { this.props.navigation.navigate('Login') }}>
+                        onPress={() => { this.logoutcall() }}>
 
                         <TouchableOpacity style={{
                             flex: .15, alignItems: 'center', justifyContent: 'center',
                             alignContent: 'center', marginLeft: 15
                         }}
-                            onPress={() => { this.props.navigation.navigate('Login') }}>
+                            onPress={() => { this.logoutcall() }}>
 
                             <Image source={require('../images/logout_icon.png')}
                                 style={styles.logouticonStyle}
@@ -523,7 +597,7 @@ class SettingsActivity extends Component {
 
 
                         <TouchableOpacity style={{ flex: .60 }}
-                            onPress={() => { this.props.navigation.navigate('Login') }}>
+                            onPress={() => { this.logoutcall() }}>
 
                             <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>logout</Text>
 
@@ -540,8 +614,9 @@ class SettingsActivity extends Component {
 
                     <View
                         style={{
-                            borderBottomColor: 'black',
+                            borderBottomColor: 'grey',
                             borderBottomWidth: 1,
+                            opacity:.5,
                             marginTop: 10
                         }}
                     />
@@ -562,7 +637,7 @@ class SettingsActivity extends Component {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('MyVideos') }}>
+                        onPress={() => { this.props.navigation.navigate('TempratureHistoryTab') }}>
 
                         <Image source={require('../images/history_inactive-2.png')}
                             style={styles.StyleVideoTab} />
@@ -737,7 +812,7 @@ const styles = StyleSheet.create({
     },
     lineStyle: {
         borderWidth: 1,
-        borderColor: 'black',
+        borderColor: 'grey',
         margin: 10,
         width: 300
     },
@@ -818,8 +893,8 @@ const styles = StyleSheet.create({
     },
     ImageIconStyle: {
         marginTop: 3,
-        height: 45,
-        width: 45,
+        height: 35,
+        width: 35,
         tintColor: '#0081C9',
         alignSelf: 'center',
         alignItems: 'center',
@@ -827,8 +902,8 @@ const styles = StyleSheet.create({
     },
     logouticonStyle: {
         marginTop: 3,
-        height: 52,
-        width: 45,
+        height: 40,
+        width: 32,
         tintColor: '#0081C9',
         alignSelf: 'center',
         alignItems: 'center',

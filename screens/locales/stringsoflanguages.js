@@ -24,7 +24,10 @@ const strings = new LocalizedStrings({
     please_enter_phone_number: 'Please enter phone number',
     please_enter_gender: 'Please enter gender',
     please_enter_location: 'Please enter location',
-    please_enter_password: 'Please enter password'
+    please_enter_password: 'Please enter password',
+    please_enter_mac_address: 'Please enter mac-address',
+    please_select_dob: 'Please select date of birth',
+    please_select_gender: 'Please select gender',
   }
 });
 

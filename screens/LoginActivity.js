@@ -9,13 +9,19 @@ import {
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from './locales/stringsoflanguages';
+import AsyncStorage from '@react-native-community/async-storage';
+import DeviceInfo from 'react-native-device-info';
+var deviceId;
 
 class LoginActivity extends Component {
 
     constructor(props) {
         super(props);
+        this.loginCall = this.loginCall.bind(this);
         this.state = {
-
+            phone: '',
+            password: '',
+            baseUrl: 'http://process.trackany.live/mobileapp/native/login.php?',
         };
     }
 
@@ -33,10 +39,79 @@ class LoginActivity extends Component {
     };
 
 
+
+    CheckTextInput = () => {
+        //Handler for the Submit onPress
+        if (this.state.phone != '') {
+            //Check for the Name TextInput
+            if (this.state.password != '') {
+                //Check for the Email TextInput
+                // alert('Success');
+         
+               deviceId = DeviceInfo.getUniqueId();
+               console.log('device id ===' + deviceId)
+                this.showLoading();
+                this.loginCall();
+            } else {
+                alert('Please Enter Password');
+            }
+        } else {
+            alert('Please Enter Phone Number');
+        }
+    };
+
     componentDidMount() {
 
 
     }
+
+
+
+    loginCall() {
+
+
+        let formdata = new FormData();
+
+        formdata.append('phone', this.state.phone)
+        formdata.append('password', this.state.password)
+        formdata.append('device_id', deviceId)
+        formdata.append('type', 'fcm')
+
+
+        var that = this;
+        var url = that.state.baseUrl;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formdata
+        }).then((response) => response.json())
+            .then(responseJson => {
+                this.hideLoading();
+
+
+                console.log("response json===" + JSON.stringify(responseJson))
+
+
+                if (responseJson.login.status == 'failed') {
+
+                    alert('Login Credentials are not correct, please check');
+
+                } else {
+                    AsyncStorage.setItem('@is_login', '1');
+
+                    this.props.navigation.navigate('Dashboard')
+                }
+
+            }).catch(err => {
+                this.hideLoading();
+                console.log(err)
+            })
+
+    }
+
 
 
     render() {
@@ -66,11 +141,12 @@ class LoginActivity extends Component {
 
 
                         <TextInput
-                            placeholder="Username/Email"
+                            placeholder="Phone No."
                             placeholderTextColor="#C3C8D1"
                             underlineColorAndroid="transparent"
                             style={styles.input}
-                            onChangeText={email => this.setState({ email })}
+                            keyboardType='number-pad'
+                            onChangeText={phone => this.setState({ phone })}
                         />
 
 
@@ -97,9 +173,7 @@ class LoginActivity extends Component {
                     <TouchableOpacity
                         style={styles.loginButtonStyle}
                         activeOpacity={.5}
-                        onPress={() => this.props.navigation.navigate('Dashboard')}>
-
-
+                        onPress={this.CheckTextInput} >
 
                         <Text style={styles.buttonWhiteTextStyle}>Sign In</Text>
 
@@ -107,7 +181,7 @@ class LoginActivity extends Component {
 
                     {/* <Text style={styles.forgotpasswordtext} onPress={() => this.props.navigation.navigate('ForgotPassword')}>Forgot Password?</Text> */}
 
-
+                    {/* 
                     <View style={{ flexDirection: 'column', alignItems: 'center' }}>
 
                         <View style={{ flexDirection: 'row', flex: .5 }}>
@@ -120,7 +194,7 @@ class LoginActivity extends Component {
 
                         </View>
 
-                    </View>
+                    </View> */}
 
                 </View>
 
