@@ -107,7 +107,7 @@ class LoginActivity extends Component {
 
             }).catch(err => {
                 this.hideLoading();
-                console.log(err)
+                console.log("errrrr=======" + err)
             })
 
     }

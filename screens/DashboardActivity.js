@@ -3,25 +3,40 @@ import {
     StyleSheet,
     View,
     Text,
-    FlatList,
     TouchableOpacity,
     Image,
-    SafeAreaView,
-    TouchableWithoutFeedback,
-    ImageBackground
+    SafeAreaView
 } from 'react-native';
+import Toast from 'react-native-simple-toast';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
 //import our Custom menu component
 import CustomMenuIcon from './custommenu/CustomMenuIcon';
+import Eddystone from "@lg2/react-native-eddystone";
+import DeviceInfo from 'react-native-device-info';
+import BackgroundTask from 'react-native-background-task'
 
+var data = [];
+var strdata = "", deviceId;
+
+console.disableYellowBox = true;
+
+BackgroundTask.define(() => {
+    console.log('Hello from a background task')
+    BackgroundTask.finish()
+})
 
 class DashboardActivity extends Component {
 
     constructor(props) {
         super(props);
+        this.devicelist = this.devicelist.bind(this);
+        this.onTelemetry = this.onTelemetry.bind(this)
         this.state = {
-
+            data: [],
+            date: '',
+            url: 'http://process.trackany.live/asset_process/device_received_data_eddystone.php?SubscriberName=Zone/',
+            devicelisturl: 'http://process.trackany.live/mobileapp/native/mBLEdevice.php?',
         };
     }
 
@@ -38,8 +53,173 @@ class DashboardActivity extends Component {
         title: 'Dashboard'
     };
 
+
+
     componentDidMount() {
 
+        deviceId = DeviceInfo.getUniqueId();
+        console.log('device id ===' + deviceId)
+
+        //  this.devicelist();
+
+        var that = this;
+        var date = new Date().getDate(); //Current Date
+        var month = new Date().getMonth() + 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+
+        var date_new = date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec;
+
+
+        that.setState({ date: date_new });
+
+        Eddystone.addListener('onTelemetryFrame', this.onTelemetry);
+        this.showLoading();
+        Toast.show('scanning start', Toast.LONG);
+        Eddystone.startScanning();
+
+        try {
+            setInterval(async () => {
+                if (strdata != "") {
+                    console.log('str data interval===' + JSON.stringify(strdata))
+                    //  if (!this.state.isnoDataVisible) {
+
+                    BackgroundTask.schedule({
+                        period: 1000, // Aim to run every 30 mins - more conservative on battery
+                      })
+
+                   // BackgroundTask.schedule()
+
+                    // this.callApi();
+                    // strdata = "";
+                }
+
+                // }
+            }, 1000);
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+
+    onTelemetry(telemetry) {
+
+        //    console.log("telemetry==== " + JSON.stringify(telemetry))
+        var str1 = telemetry.result.replace('ScanResult{', '')
+        let str2 = str1.replace('device=', '')
+        let str3 = str2.replace(',', '')
+        var str4 = str3.split(" ");
+        var str5 = str4[0];
+
+
+        var str6 = str4[21];
+        var str7 = str6.replace('rssi=', '');
+        let rssi = str7.replace(',', '')
+        // console.log("rssi==== " + JSON.stringify(rssi))
+
+        this.hideLoading();
+
+
+        data.push({
+            device_address: str5.toLowerCase(),
+            rssi: rssi,
+            dir: 1,
+            temp: telemetry.tempnew,
+            heart_rate: telemetry.heart_rate,
+            oxygen: telemetry.oxygen,
+            date: this.state.date
+        });
+
+        // console.log("data ==== " + JSON.stringify(data))
+
+
+        this.setState({ data: data })
+
+        if (data.length > 0) {
+            for (let i = 0; i < data.length; i++) {
+                strdata = "|" + data[i].device_address + "," + data[i].rssi + "," + data[i].dir + "," + data[i].temp + "," + data[i].heart_rate + "," + data[i].oxygen + "," + data[i].date;
+            }
+        }
+
+
+
+        // console.log("strdata ====" + JSON.stringify(strdata));
+
+    }
+
+    callApi() {
+        Toast.show('Api calling', Toast.LONG);
+        console.log("strdata in api====" + JSON.stringify(strdata));
+        var url = this.state.url + deviceId;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': ''
+            },
+            body: strdata
+
+        })
+            .then(response => response)
+            .then(responseData => {
+                this.hideLoading();
+                console.log('response object:', responseData);
+
+            })
+            .catch(error => {
+                this.hideLoading();
+                console.log('error:', error);
+                //   console.error(error);
+            })
+
+            .done();
+    }
+
+
+    componentWillUnmount() {
+        Eddystone.stopScanning();
+    }
+
+
+    devicelist() {
+
+        let formdata = new FormData();
+
+        formdata.append('device_id', deviceId)
+        formdata.append('token', '1234')
+
+        console.log('form data===' + JSON.stringify(formdata))
+
+        var that = this;
+        var url = that.state.baseUrl;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            body: formdata
+        }).then((response) => response.json())
+            .then(responseJson => {
+                this.hideLoading();
+
+                console.log("response json===" + JSON.stringify(responseJson.getBLEDetailsList))
+
+                if (responseJson.getBLEDetailsList.length == '') {
+                    this.setState({ isnoDataVisible: true })
+
+                } else {
+                    this.setState({ isnoDataVisible: false })
+                    this.setState({ data: responseJson.getBLEDetailsList });
+
+                }
+
+            }).catch(err => {
+                this.hideLoading();
+                console.log(err)
+            })
 
     }
 
@@ -53,11 +233,11 @@ class DashboardActivity extends Component {
 
                     <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .8 }}>
 
-                        <Text style={styles.screentitle}>Smart Wristband</Text>
+                        <Text style={styles.screentitle}>{deviceId}</Text>
 
                     </TouchableOpacity>
                     <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .2 }}>
-                     
+
 
                         <CustomMenuIcon
                             //Menu Text
@@ -74,15 +254,15 @@ class DashboardActivity extends Component {
                             }}
                             //Click functions for the menu items
                             option1Click={() => {
-                              
-                                 this.props.navigation.navigate('AddBluetoothDevice') 
-                              
-                
+
+                                this.props.navigation.navigate('AddBluetoothDevice')
+
+
                             }}
                             option2Click={() => {
-                                this.props.navigation.navigate('BluetoothDeviceList') 
-                             }}
-                          
+                                this.props.navigation.navigate('BluetoothDeviceList')
+                            }}
+
                         />
 
                     </TouchableOpacity>
@@ -434,7 +614,7 @@ const styles = StyleSheet.create({
     },
     screentitle: {
         color: "white",
-        fontSize: 20,
+        fontSize: 10,
         textAlign: 'center',
         fontWeight: 'bold'
     },

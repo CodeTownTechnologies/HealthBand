@@ -14,7 +14,9 @@ import {
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import DeviceInfo from 'react-native-device-info';
 
-var deviceId,ble_mac;
+
+
+var deviceId, ble_mac;
 
 function Item({ item }) {
     return (
@@ -32,7 +34,7 @@ function Item({ item }) {
 
                         <View style={{ flex: .30, flexDirection: 'column', justifyContent: 'center' }}>
 
-                        <Image source={require('../images/delete_icon.png')}
+                            <Image source={require('../images/delete_icon.png')}
                                 style={styles.ImageIconStyle}
                             />
                         </View>
@@ -91,8 +93,8 @@ class BluetoothDeviceListActivity extends Component {
             <View style={styles.container}>
                 {
 
-                     this.state.isnoDataVisible ?
-                     
+                    this.state.isnoDataVisible ?
+
                         <Text style={{ textAlign: 'center' }}>No Device Found</Text>
                         : null
                 }
@@ -109,11 +111,11 @@ class BluetoothDeviceListActivity extends Component {
             'Smart Wristband',
             'Are you sure you want to delete?',
             [
-              {text: 'No', onPress: () => console.log('Cancel Pressed!')},
-              {text: 'Yes', onPress: () =>  this.deleteDevice(item)},
+                { text: 'No', onPress: () => console.log('Cancel Pressed!') },
+                { text: 'Yes', onPress: () => this.deleteDevice(item) },
             ],
             { cancelable: false }
-          )
+        )
     }
 
 
@@ -139,8 +141,8 @@ class BluetoothDeviceListActivity extends Component {
             .then(responseJson => {
                 this.hideLoading();
 
-                console.log("response json===" + responseJson.getBLEDetailsList)
-               
+                console.log("response json===" + JSON.stringify(responseJson.getBLEDetailsList))
+
                 if (responseJson.getBLEDetailsList.length == '') {
                     this.setState({ isnoDataVisible: true })
 
@@ -164,7 +166,7 @@ class BluetoothDeviceListActivity extends Component {
         formdata.append('ble_mac', item.ble_mac)
         formdata.append('token', '1234')
 
-        
+
 
         console.log('form data===' + JSON.stringify(formdata))
 
@@ -180,21 +182,19 @@ class BluetoothDeviceListActivity extends Component {
         }).then((response) => response.json())
             .then(responseJson => {
                 this.hideLoading();
-              
-                if(responseJson.deleteDeviceDetails=='success')
-                {
+
+                if (responseJson.deleteDeviceDetails == 'success') {
                     this.setState({
                         data: this.state.data.filter(item => item.ble_mac !== ble_mac)
-                       })
+                    })
                 }
-                else
-                {
+                else {
                     alert('some error occured');
                 }
-             
+
 
                 console.log("response json===" + JSON.stringify(responseJson))
-        
+
 
             }).catch(err => {
                 this.hideLoading();
@@ -202,7 +202,6 @@ class BluetoothDeviceListActivity extends Component {
             })
 
     }
-
 
 
     render() {
@@ -229,6 +228,13 @@ class BluetoothDeviceListActivity extends Component {
 
                     <View style={{ flex: .20 }}>
 
+                        <TouchableOpacity style={{ flex: .20 }}
+                            onPress={() => {this.props.navigation.navigate('AddBluetoothDevice') 
+                        }}>
+
+                            <Text style={styles.add_device_text}>ADD DEVICE</Text>
+
+                        </TouchableOpacity>
 
                     </View>
 
@@ -403,6 +409,12 @@ const styles = StyleSheet.create({
     screentitle: {
         color: "white",
         fontSize: 20,
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+    add_device_text: {
+        color: "white",
+        fontSize: 12,
         textAlign: 'center',
         fontWeight: 'bold'
     },

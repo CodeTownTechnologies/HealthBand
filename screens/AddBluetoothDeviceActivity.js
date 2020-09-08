@@ -118,8 +118,9 @@ class AddBluetoothDeviceActivity extends Component {
                 this.hideLoading();
 
                 console.log("response json===" + JSON.stringify(responseJson))
+                this.props.navigation.navigate('BluetoothDeviceList')
 
-               alert(responseJson.setDeviceDetails);
+              // alert(responseJson.setDeviceDetails);
 
             }).catch(err => {
                 this.hideLoading();
@@ -206,7 +207,7 @@ class AddBluetoothDeviceActivity extends Component {
                                 placeholderTextColor="#C3C8D1"
                                 underlineColorAndroid="transparent"
                                 style={styles.input}
-                                keyboardType='number-pad'
+                                keyboardType='default'
                                 onChangeText={mac_address => this.setState({ mac_address })}
                             />
 

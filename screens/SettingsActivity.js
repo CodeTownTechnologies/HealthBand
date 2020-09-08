@@ -13,6 +13,7 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
 import AsyncStorage from '@react-native-community/async-storage';
 import DeviceInfo from 'react-native-device-info';
+import { ScrollView } from 'react-native-gesture-handler';
 
 var deviceId;
 
@@ -53,7 +54,9 @@ class SettingsActivity extends Component {
 
     componentDidMount() {
 
+        deviceId = DeviceInfo.getUniqueId();
 
+        console.log('device id====' + deviceId)
         
     }
 
@@ -212,7 +215,7 @@ class SettingsActivity extends Component {
 
 
     logoutcall() {
-        deviceId = DeviceInfo.getUniqueId();
+       
         console.log('device id ===' + deviceId)
 
         let formdata = new FormData();
@@ -620,6 +623,10 @@ class SettingsActivity extends Component {
                             marginTop: 10
                         }}
                     />
+
+
+                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>device id + {deviceId}</Text>
+
 
                 </View>
 
