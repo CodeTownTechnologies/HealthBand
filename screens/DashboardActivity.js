@@ -5,8 +5,13 @@ import {
     Text,
     TouchableOpacity,
     Image,
-    SafeAreaView
+    SafeAreaView,
+    Platform,
+    Linking,
+    YellowBox,
+    StatusBar
 } from 'react-native';
+import { Header, Colors } from 'react-native/Libraries/NewAppScreen';
 import Toast from 'react-native-simple-toast';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
@@ -14,24 +19,86 @@ import stringsoflanguages from '../screens/locales/stringsoflanguages';
 import CustomMenuIcon from './custommenu/CustomMenuIcon';
 import Eddystone from "@lg2/react-native-eddystone";
 import DeviceInfo from 'react-native-device-info';
-import BackgroundTask from 'react-native-background-task'
+
+import BackgroundJob from 'react-native-background-actions';
 
 var data = [];
 var strdata = "", deviceId;
 
-console.disableYellowBox = true;
+YellowBox.ignoreWarnings([""]);
 
-BackgroundTask.define(() => {
-    console.log('Hello from a background task')
-    BackgroundTask.finish()
-})
+const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
+
+const taskRandom = async taskData => {
+    if (Platform.OS === 'ios') {
+        console.warn(
+            'This task will not keep your app alive in the background by itself, use other library like react-native-track-player that use audio,',
+            'geolocalization, etc. to keep your app alive in the background while you excute the JS from this library.',
+        );
+    }
+    await new Promise(async resolve => {
+        // For loop with a delay
+        const { delay } = taskData;
+        for (let i = 0; BackgroundJob.isRunning(); i++) {
+
+            try {
+                setInterval(async () => {
+                    if (strdata != "") {
+                      //  console.log('str data interval===' + JSON.stringify(strdata))
+
+
+                        Toast.show('Api calling', Toast.LONG);
+                        console.log("strdata in api====" + JSON.stringify(strdata));
+                      
+
+                    //    this.callApi();
+                     
+                    }
+
+
+                }, 60000);
+            } catch (e) {
+                console.log(e);
+            }
+
+            //   console.log('Runned -> ', i);
+            //  await BackgroundJob.updateNotification({taskDesc: 'Runned -> ' + i});
+            await sleep(delay);
+        }
+    });
+};
+
+const options = {
+    taskName: 'Example',
+    taskTitle: 'Health Band',
+    taskDesc: 'Background Service running',
+    taskIcon: {
+        name: 'ic_launcher',
+        type: 'mipmap',
+    },
+    color: '#0081C9',
+    // linkingURI: 'exampleScheme://chat/jane',
+    parameters: {
+        delay: 60000,
+    },
+};
+
+// function handleOpenURL(evt) {
+//     console.log(evt.url);
+//     // do something with the url
+// }
+
+//Linking.addEventListener('url', handleOpenURL);
+
 
 class DashboardActivity extends Component {
+    playing = BackgroundJob.isRunning();
 
     constructor(props) {
         super(props);
         this.devicelist = this.devicelist.bind(this);
-        this.onTelemetry = this.onTelemetry.bind(this)
+        this.onTelemetry = this.onTelemetry.bind(this);
+        this.callApi = this.callApi.bind(this);
         this.state = {
             data: [],
             date: '',
@@ -60,9 +127,27 @@ class DashboardActivity extends Component {
         deviceId = DeviceInfo.getUniqueId();
         console.log('device id ===' + deviceId)
 
+        this.playing = !this.playing;
+        if (this.playing) {
+            try {
+                console.log('Trying to start background service');
+                 BackgroundJob.start(taskRandom, options);
+              
+                console.log('Successful start!');
+            } catch (e) {
+                console.log('Error', e);
+            }
+        } 
+        
+      //  else {
+          //  console.log('Stop background service');
+          //  await BackgroundJob.stop();
+     //   }
+
+      //  this.toggleBackground();
         //  this.devicelist();
 
-        var that = this;
+        //  var that = this;
         var date = new Date().getDate(); //Current Date
         var month = new Date().getMonth() + 1; //Current Month
         var year = new Date().getFullYear(); //Current Year
@@ -73,54 +158,45 @@ class DashboardActivity extends Component {
         var date_new = date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec;
 
 
-        that.setState({ date: date_new });
+        this.setState({ date: date_new });
 
         Eddystone.addListener('onTelemetryFrame', this.onTelemetry);
         this.showLoading();
         Toast.show('scanning start', Toast.LONG);
         Eddystone.startScanning();
 
+
         try {
             setInterval(async () => {
-                if (strdata != "") {
-                    console.log('str data interval===' + JSON.stringify(strdata))
-                    //  if (!this.state.isnoDataVisible) {
-
-                    BackgroundTask.schedule({
-                        period: 1000, // Aim to run every 30 mins - more conservative on battery
-                      })
-
-                   // BackgroundTask.schedule()
-
-                    // this.callApi();
-                    // strdata = "";
+                if(strdata!=""){
+              this.callApi();
+                  strdata="";
                 }
-
-                // }
-            }, 1000);
-        } catch (e) {
+            }, 60000);
+          } catch(e) {
             console.log(e);
-        }
+          }
     }
 
 
     onTelemetry(telemetry) {
 
-        //    console.log("telemetry==== " + JSON.stringify(telemetry))
+      // console.log("telemetry==== " + JSON.stringify(telemetry))
         var str1 = telemetry.result.replace('ScanResult{', '')
-        let str2 = str1.replace('device=', '')
+        let str2 = str1.replace('mDevice=', '')
         let str3 = str2.replace(',', '')
         var str4 = str3.split(" ");
         var str5 = str4[0];
 
 
         var str6 = str4[21];
-        var str7 = str6.replace('rssi=', '');
+        var str7 = str6.replace('mRssi=', '');
         let rssi = str7.replace(',', '')
-        // console.log("rssi==== " + JSON.stringify(rssi))
+        console.log("rssi==== " + JSON.stringify(rssi))
 
         this.hideLoading();
 
+        console.log("heart rate====" + telemetry.heart_rate);
 
         data.push({
             device_address: str5.toLowerCase(),
@@ -144,7 +220,6 @@ class DashboardActivity extends Component {
         }
 
 
-
         // console.log("strdata ====" + JSON.stringify(strdata));
 
     }
@@ -165,7 +240,7 @@ class DashboardActivity extends Component {
             .then(response => response)
             .then(responseData => {
                 this.hideLoading();
-                console.log('response object:', responseData);
+             //   console.log('response object:', responseData);
 
             })
             .catch(error => {
@@ -179,7 +254,7 @@ class DashboardActivity extends Component {
 
 
     componentWillUnmount() {
-        Eddystone.stopScanning();
+        //Eddystone.stopScanning();
     }
 
 
@@ -223,129 +298,150 @@ class DashboardActivity extends Component {
 
     }
 
+    /**
+  * Toggles the background task
+  */
+    toggleBackground = async () => {
+        this.playing = !this.playing;
+        if (this.playing) {
+            try {
+                console.log('Trying to start background service');
+                await BackgroundJob.start(taskRandom, options);
+              
+                console.log('Successful start!');
+            } catch (e) {
+                console.log('Error', e);
+            }
+        } else {
+            console.log('Stop background service');
+            await BackgroundJob.stop();
+        }
+    };
+
     render() {
         return (
-            <SafeAreaView style={styles.container}>
+            <>
+                {/* <StatusBar barStyle="dark-content" /> */}
+                <SafeAreaView style={styles.container}>
+
+                    <View style={styles.headerView}>
+                        <TouchableOpacity
+                           onPress={this.toggleBackground}
+                            style={{ alignItems: 'center', justifyContent: 'center', flex: .8 }}>
+
+                            <Text style={styles.screentitle}>{deviceId}</Text>
+
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .2 }}>
 
 
-                <View style={styles.headerView}>
+                            <CustomMenuIcon
+                                //Menu Text
+                                menutext="Menu"
+                                //Menu View Style
+                                menustyle={{
+                                    marginRight: 5,
+                                    flexDirection: 'row',
+                                    justifyContent: 'flex-end',
+                                }}
+                                //Menu Text Style
+                                textStyle={{
+                                    color: 'white',
+                                }}
+                                //Click functions for the menu items
+                                option1Click={() => {
+
+                                    this.props.navigation.navigate('AddBluetoothDevice')
 
 
-                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .8 }}>
+                                }}
+                                option2Click={() => {
+                                    this.props.navigation.navigate('BluetoothDeviceList')
+                                }}
 
-                        <Text style={styles.screentitle}>{deviceId}</Text>
+                            />
 
-                    </TouchableOpacity>
-                    <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .2 }}>
-
-
-                        <CustomMenuIcon
-                            //Menu Text
-                            menutext="Menu"
-                            //Menu View Style
-                            menustyle={{
-                                marginRight: 5,
-                                flexDirection: 'row',
-                                justifyContent: 'flex-end',
-                            }}
-                            //Menu Text Style
-                            textStyle={{
-                                color: 'white',
-                            }}
-                            //Click functions for the menu items
-                            option1Click={() => {
-
-                                this.props.navigation.navigate('AddBluetoothDevice')
-
-
-                            }}
-                            option2Click={() => {
-                                this.props.navigation.navigate('BluetoothDeviceList')
-                            }}
-
-                        />
-
-                    </TouchableOpacity>
-
-                </View>
-
-
-
-                <View style={styles.container}>
-
-                    <View style={styles.row}>
-                        <View style={styles.tempbox}>
-
-                            <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#F5AB3F', alignItems: 'center', alignSelf: 'center' }}>
-
-
-                                <Text style={styles.boxtitle}>Temprature</Text>
-
-
-                            </View>
-
-                            <View style={{
-                                flex: .8, flexDirection: 'row', backgroundColor: '#F29600', borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
-                            }}>
-
-
-                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
-
-
-                                    <Image source={require('../images/thermometer.png')}
-                                        style={styles.iconstyle} />
-
-                                </View>
-
-
-
-
-                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
-
-
-                                    <Text style={styles.screentitle}>94.03 F</Text>
-
-
-
-                                </View>
-
-                            </View>
-
-
-
-                        </View>
+                        </TouchableOpacity>
 
                     </View>
 
-                    <View style={styles.row}>
-                        <View style={styles.heartbox}>
-
-                            <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#F67A96', alignItems: 'center', alignSelf: 'center' }}>
 
 
-                                <Text style={styles.boxtitle}>Heart Rate</Text>
+                    <View style={styles.container}>
+
+                        <View style={styles.row}>
+                            <View style={styles.tempbox}>
+
+                                <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#F5AB3F', alignItems: 'center', alignSelf: 'center' }}>
 
 
-                            </View>
-
-                            <View style={{
-                                flex: .8, flexDirection: 'row', backgroundColor: '#EE3364', borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
-                            }}>
-
-
-                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
-
-
-
-                                    <Image source={require('../images/cardiogram.png')}
-                                        style={styles.iconstyle} />
+                                    <Text style={styles.boxtitle}>Temprature</Text>
 
 
                                 </View>
 
-                                {/* <View
+                                <View style={{
+                                    flex: .8, flexDirection: 'row', backgroundColor: '#F29600', borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20
+                                }}>
+
+
+                                    <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+
+
+                                        <Image source={require('../images/thermometer.png')}
+                                            style={styles.iconstyle} />
+
+                                    </View>
+
+
+
+
+                                    <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+
+
+                                        <Text style={styles.screentitle}>94.03 F</Text>
+
+
+
+                                    </View>
+
+                                </View>
+
+
+
+                            </View>
+
+                        </View>
+
+                        <View style={styles.row}>
+                            <View style={styles.heartbox}>
+
+                                <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#F67A96', alignItems: 'center', alignSelf: 'center' }}>
+
+
+                                    <Text style={styles.boxtitle}>Heart Rate</Text>
+
+
+                                </View>
+
+                                <View style={{
+                                    flex: .8, flexDirection: 'row', backgroundColor: '#EE3364', borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20
+                                }}>
+
+
+                                    <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+
+
+
+                                        <Image source={require('../images/cardiogram.png')}
+                                            style={styles.iconstyle} />
+
+
+                                    </View>
+
+                                    {/* <View
                                     style={{
                                         borderLeftWidth: 1,
                                         borderLeftColor: 'white',
@@ -356,49 +452,49 @@ class DashboardActivity extends Component {
 
 
 
-                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+                                    <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
 
 
 
-                                    <Text style={styles.screentitle}>74 bpm</Text>
+                                        <Text style={styles.screentitle}>74 bpm</Text>
+
+                                    </View>
 
                                 </View>
 
+
+
                             </View>
-
-
 
                         </View>
 
-                    </View>
+                        <View style={styles.row}>
+                            <View style={styles.blodbox}>
 
-                    <View style={styles.row}>
-                        <View style={styles.blodbox}>
-
-                            <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#FD835E', alignItems: 'center', alignSelf: 'center' }}>
+                                <View style={{ flex: .2, flexDirection: 'row', width: '100%', backgroundColor: '#FD835E', alignItems: 'center', alignSelf: 'center' }}>
 
 
-                                <Text style={styles.boxtitle}>Blood Oxygen SPO2</Text>
+                                    <Text style={styles.boxtitle}>Blood Oxygen SPO2</Text>
 
-
-                            </View>
-                            <View style={{
-                                flex: .8, flexDirection: 'row', backgroundColor: '#FB6230', borderBottomLeftRadius: 20,
-                                borderBottomRightRadius: 20
-                            }}>
-
-
-                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
-
-
-
-                                    <Image source={require('../images/blood-drop.png')}
-                                        style={styles.iconstyle} />
 
                                 </View>
+                                <View style={{
+                                    flex: .8, flexDirection: 'row', backgroundColor: '#FB6230', borderBottomLeftRadius: 20,
+                                    borderBottomRightRadius: 20
+                                }}>
 
-                                {/* <View
+
+                                    <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+
+
+
+                                        <Image source={require('../images/blood-drop.png')}
+                                            style={styles.iconstyle} />
+
+                                    </View>
+
+                                    {/* <View
                                     style={{
                                         borderLeftWidth: 1,
                                         borderLeftColor: 'white',
@@ -408,86 +504,87 @@ class DashboardActivity extends Component {
  */}
 
 
-                                <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
+                                    <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
-                                    <Text style={styles.screentitle}>96%</Text>
+                                        <Text style={styles.screentitle}>96%</Text>
 
 
+
+                                    </View>
 
                                 </View>
 
+
+
+
+
                             </View>
 
-
-
-
-
                         </View>
+
 
                     </View>
 
 
-                </View>
 
 
+                    <View style={styles.tabStyle}>
 
+                        <TouchableOpacity style={styles.tabButtonStyle}
+                            onPress={() => { this.props.navigation.navigate('Dashboard') }}>
 
-                <View style={styles.tabStyle}>
+                            <Image source={require('../images/home_active.png')}
+                                style={styles.StyleHomeTab} />
 
-                    <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('Dashboard') }}>
+                            <Text style={styles.bottomactivetextstyle}>{stringsoflanguages.Home}</Text>
 
-                        <Image source={require('../images/home_active.png')}
-                            style={styles.StyleHomeTab} />
+                        </TouchableOpacity>
 
-                        <Text style={styles.bottomactivetextstyle}>{stringsoflanguages.Home}</Text>
+                        <TouchableOpacity style={styles.tabButtonStyle}
+                            onPress={() => { this.props.navigation.navigate('TempratureHistoryTab') }}>
 
-                    </TouchableOpacity>
+                            <Image source={require('../images/history_inactive-2.png')}
+                                style={styles.StyleVideoTab} />
 
-                    <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('TempratureHistoryTab') }}>
+                            <Text style={styles.bottomvideotextstyle}>{stringsoflanguages.my_videos}</Text>
 
-                        <Image source={require('../images/history_inactive-2.png')}
-                            style={styles.StyleVideoTab} />
-
-                        <Text style={styles.bottomvideotextstyle}>{stringsoflanguages.my_videos}</Text>
-
-                    </TouchableOpacity>
+                        </TouchableOpacity>
 
 
 
 
 
-                    <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('Notification') }}>
+                        <TouchableOpacity style={styles.tabButtonStyle}
+                            onPress={() => { this.props.navigation.navigate('Notification') }}>
 
-                        <Image source={require('../images/bell_inactive.png')}
-                            style={styles.styleNotificationTab} />
+                            <Image source={require('../images/bell_inactive.png')}
+                                style={styles.styleNotificationTab} />
 
-                        <Text style={styles.bottomnotificationtextstyle}>{stringsoflanguages.notification_small}</Text>
+                            <Text style={styles.bottomnotificationtextstyle}>{stringsoflanguages.notification_small}</Text>
 
-                    </TouchableOpacity>
-
-
-                    <TouchableOpacity style={styles.tabButtonStyle}
-                        onPress={() => { this.props.navigation.navigate('Settings') }}>
-
-                        <Image source={require('../images/setting_inactive.png')}
-                            style={styles.StyleProfileTab} />
-
-                        <Text style={styles.bottominactivetextstyle}>{stringsoflanguages.settings}</Text>
+                        </TouchableOpacity>
 
 
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.tabButtonStyle}
+                            onPress={() => { this.props.navigation.navigate('Settings') }}>
+
+                            <Image source={require('../images/setting_inactive.png')}
+                                style={styles.StyleProfileTab} />
+
+                            <Text style={styles.bottominactivetextstyle}>{stringsoflanguages.settings}</Text>
+
+
+                        </TouchableOpacity>
 
 
 
 
 
 
-                </View>
+                    </View>
 
-            </SafeAreaView>
+                </SafeAreaView>
+            </>
         );
     }
 }

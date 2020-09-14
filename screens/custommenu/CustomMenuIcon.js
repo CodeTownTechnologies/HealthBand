@@ -49,6 +49,7 @@ export default class CustomMenuIcon extends Component {
           }>
           <MenuItem onPress={this.option1Click}>Register your device</MenuItem>
           <MenuItem onPress={this.option2Click}>Device List</MenuItem>
+          
       
         </Menu>
       </View>

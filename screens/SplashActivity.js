@@ -15,7 +15,7 @@ class SplashActivity extends Component {
     constructor(props) {
         super(props);
         this.state = {
-         
+
         };
     }
 
@@ -44,7 +44,7 @@ class SplashActivity extends Component {
     }
 
     load = () => {
-      
+
         this.showLoading();
 
         this.timeoutHandle = setTimeout(() => {
@@ -66,8 +66,8 @@ class SplashActivity extends Component {
     render() {
         return (
             <View style={styles.container}>
+                <Text style={styles.screentitle}>Smart Wristband</Text>
 
-            
             </View>
         );
     }
@@ -101,6 +101,12 @@ const styles = StyleSheet.create({
         fontSize: RFValue(10, 580),
         textAlign: 'center',
         color: '#FFC33B',
+        fontWeight: 'bold'
+    },
+    screentitle: {
+        color: "white",
+        fontSize: 20,
+        textAlign: 'center',
         fontWeight: 'bold'
     },
 });

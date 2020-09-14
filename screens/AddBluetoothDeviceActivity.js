@@ -15,6 +15,7 @@ import DatePicker from 'react-native-datepicker'
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from './locales/stringsoflanguages';
 import DeviceInfo from 'react-native-device-info';
+import Toast from 'react-native-simple-toast';
 
 var deviceId;
 
@@ -103,6 +104,7 @@ class AddBluetoothDeviceActivity extends Component {
         formdata.append('token', '1234')
 
         console.log('form data===' + JSON.stringify(formdata))
+        console.log(' device id ===' + deviceId)
 
         var that = this;
         var url = that.state.baseUrl;
@@ -117,10 +119,12 @@ class AddBluetoothDeviceActivity extends Component {
             .then(responseJson => {
                 this.hideLoading();
 
-                console.log("response json===" + JSON.stringify(responseJson))
+                //   console.log("response json===" + JSON.stringify(responseJson))
+                Toast.show(responseJson.setDeviceDetails, Toast.LONG);
+
                 this.props.navigation.navigate('BluetoothDeviceList')
 
-              // alert(responseJson.setDeviceDetails);
+                // alert(responseJson.setDeviceDetails);
 
             }).catch(err => {
                 this.hideLoading();
@@ -406,7 +410,7 @@ const styles = StyleSheet.create({
     },
     screentitle: {
         color: "white",
-        fontSize: 20,
+        fontSize: 14,
         textAlign: 'center',
         fontWeight: 'bold'
     },

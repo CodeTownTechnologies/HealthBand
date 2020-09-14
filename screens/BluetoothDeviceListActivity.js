@@ -15,7 +15,6 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import DeviceInfo from 'react-native-device-info';
 
 
-
 var deviceId, ble_mac;
 
 function Item({ item }) {
@@ -95,7 +94,7 @@ class BluetoothDeviceListActivity extends Component {
 
                     this.state.isnoDataVisible ?
 
-                        <Text style={{ textAlign: 'center' }}>No Device Found</Text>
+                        <Text style={{ textAlign: 'center', alignSelf:'center' }}>No Device Found</Text>
                         : null
                 }
             </View>
@@ -168,7 +167,7 @@ class BluetoothDeviceListActivity extends Component {
 
 
 
-        console.log('form data===' + JSON.stringify(formdata))
+      //  console.log('form data===' + JSON.stringify(formdata))
 
         var that = this;
         var url = that.state.baseUrl;
@@ -226,9 +225,9 @@ class BluetoothDeviceListActivity extends Component {
                     </View>
 
 
-                    <View style={{ flex: .20 }}>
+                    <View style={{ flex: .20 , marginTop: 5}}>
 
-                        <TouchableOpacity style={{ flex: .20 }}
+                        <TouchableOpacity style={{ flex: .40, alignContent: 'center', alignItems:'center', alignSelf: 'center' }}
                             onPress={() => {this.props.navigation.navigate('AddBluetoothDevice') 
                         }}>
 
@@ -278,7 +277,8 @@ class BluetoothDeviceListActivity extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#F6F9FE'
+        backgroundColor: '#F6F9FE',
+   
     },
     loading: {
         left: 0,
@@ -408,13 +408,16 @@ const styles = StyleSheet.create({
     },
     screentitle: {
         color: "white",
-        fontSize: 20,
+        fontSize: 14,
         textAlign: 'center',
         fontWeight: 'bold'
     },
     add_device_text: {
         color: "white",
-        fontSize: 12,
+        fontSize: 8,
+        alignContent: 'center',
+        alignItems:'center',
+        alignSelf:'center',
         textAlign: 'center',
         fontWeight: 'bold'
     },
