@@ -35,7 +35,7 @@ class SettingsActivity extends Component {
             bluetoothstatusvalue: 'ON',
             logouturl: 'http://process.trackany.live/mobileapp/native/logout.php?',
 
- 
+
         };
     }
 
@@ -57,7 +57,7 @@ class SettingsActivity extends Component {
         deviceId = DeviceInfo.getUniqueId();
 
         console.log('device id====' + deviceId)
-        
+
     }
 
 
@@ -215,7 +215,7 @@ class SettingsActivity extends Component {
 
 
     logoutcall() {
-       
+
         console.log('device id ===' + deviceId)
 
         let formdata = new FormData();
@@ -240,7 +240,7 @@ class SettingsActivity extends Component {
 
                 this.props.navigation.navigate('Login')
 
-             
+
 
             }).catch(err => {
                 this.hideLoading();
@@ -251,13 +251,14 @@ class SettingsActivity extends Component {
 
 
 
-   
+
 
 
 
     render() {
         return (
             <SafeAreaView style={styles.container}>
+
 
                 <View style={styles.headerView}>
 
@@ -271,364 +272,369 @@ class SettingsActivity extends Component {
                 </View>
 
 
-                <View style={{
-                    flexDirection: 'column', backgroundColor: 'white',
-                    flex: 1, width: '100%'
-                }}>
+                <View style={{ flexDirection: 'column', backgroundColor: 'white', flex: .8, width: '100%' }}>
 
-                    <View style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}>
+                    <ScrollView>
 
                         <View style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
-                        }}
-                            onPress={() => { }} >
-
-                            <Image source={require('../images/thermometer.png')}
-                                style={styles.ImageIconStyle}
-                            />
-
-
-                        </View>
-
-
-                        <View style={{ flex: .40 }}
-                            onPress={() => { }} >
-
-                            {/* <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.tempstatusvalue}</Text> */}
-
-
-                        </View>
-
-                        <View style={{ flex: .45, marginRight: 20}}
-                            onPress={() => { }} >
+                            flex: 1, flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
+                        }}>
 
                             <View style={{
-                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
-                            }}>
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { }} >
 
-                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110.0F</Text>
+                                <Image source={require('../images/thermometer.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
 
                             </View>
 
 
+                            <View style={{ flex: .40 }}
+                                onPress={() => { }} >
+
+                                {/* <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.tempstatusvalue}</Text> */}
+
+
+                            </View>
+
+                            <View style={{ flex: .45, marginRight: 20 }}
+                                onPress={() => { }} >
+
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                                }}>
+
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110.0F</Text>
+
+                                </View>
+
+
+                            </View>
+
                         </View>
 
-                    </View>
-
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1,
-                            opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-                    <View style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}>
+                        <View
+                            style={{
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                width: '100%',
+                                marginTop: 10
+                            }}
+                        />
 
                         <View style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
-                        }}
-                            onPress={() => { }} >
-
-                            <Image source={require('../images/cardiogram.png')}
-                                style={styles.ImageIconStyle}
-                            />
-
-
-                        </View>
-
-
-                        <View style={{ flex: .40, margin: 10 }}
-                            onPress={() => { }} >
+                            width: '100%',
+                            flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
+                        }}>
 
                             <View style={{
-                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
-                            }}>
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { }} >
 
-                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>50</Text>
+                                <Image source={require('../images/cardiogram.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
 
                             </View>
 
 
-                        </View>
+                            <View style={{ flex: .40, margin: 10 }}
+                                onPress={() => { }} >
 
-                        <View style={{ flex: .40, margin: 10 }}
-                            onPress={() => { }} >
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                                }}>
 
-                            <View style={{
-                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
-                            }}>
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>50</Text>
 
-                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110</Text>
+                                </View>
 
-                            </View>
-                        </View>
-
-                    </View>
-
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1,
-                            opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-                    <View style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}>
-
-                        <View style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
-                        }}
-                            onPress={() => { }} >
-
-                            <Image source={require('../images/blood-drop.png')}
-                                style={styles.ImageIconStyle}
-                            />
-
-
-                        </View>
-
-
-
-                        <View style={{ flex: .40, margin: 10 }}
-                            onPress={() => { }} >
-
-                            <View style={{
-                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
-                            }}>
-
-                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>91</Text>
 
                             </View>
 
+                            <View style={{ flex: .40, margin: 10 }}
+                                onPress={() => { }} >
+
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                                }}>
+
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110</Text>
+
+                                </View>
+                            </View>
 
                         </View>
 
-                        <View style={{ flex: .40, margin: 10 }}
-                            onPress={() => { }} >
+                        <View
+                            style={{
+                                width: '100%',
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                marginTop: 10
+                            }}
+                        />
+
+                        <View style={{
+                            width: '100%',
+                            flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
+                        }}>
 
                             <View style={{
-                                flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
-                            }}>
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { }} >
 
-                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>100</Text>
+                                <Image source={require('../images/blood-drop.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
 
                             </View>
+
+
+
+                            <View style={{ flex: .40, margin: 10 }}
+                                onPress={() => { }} >
+
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                                }}>
+
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>91</Text>
+
+                                </View>
+
+
+                            </View>
+
+                            <View style={{ flex: .40, margin: 10 }}
+                                onPress={() => { }} >
+
+                                <View style={{
+                                    flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
+                                }}>
+
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>100</Text>
+
+                                </View>
+                            </View>
+
                         </View>
 
-                    </View>
+                        <View
+                            style={{
+                                width: '100%',
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                marginTop: 10
+                            }}
+                        />
 
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1,
-                            opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-
-                    <View style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}>
 
                         <View style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
-                        }}
-                            onPress={() => { }} >
+                            flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center', width: '100%'
+                        }}>
 
-                            <Image source={require('../images/clock.png')}
-                                style={styles.ImageIconStyle}
-                            />
+                            <View style={{
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { }} >
 
+                                <Image source={require('../images/clock.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
+
+                            </View>
+
+
+                            <TouchableOpacity style={{ flex: .60 }}
+                                onPress={() => { }} >
+
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>27/07/2020</Text>
+
+
+
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { }} >
+
+                                <Image source={require('../images/calendar.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
+                            </TouchableOpacity>
 
                         </View>
 
-
-                        <TouchableOpacity style={{ flex: .60 }}
-                            onPress={() => { }} >
-
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>27/07/2020</Text>
-
-
-
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-                            onPress={() => { }} >
-
-                            <Image source={require('../images/calendar.png')}
-                                style={styles.ImageIconStyle}
-                            />
-
-                        </TouchableOpacity>
-
-                    </View>
-
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1, 
-                             opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-                    <View style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}>
+                        <View
+                            style={{
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                width: '100%',
+                                marginTop: 10
+                            }}
+                        />
 
                         <View style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
-                        }}
-                            onPress={() => { }} >
+                            flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
+                        }}>
 
-                            <Image source={require('../images/sync.png')}
-                                style={styles.ImageIconStyle}
-                            />
+                            <View style={{
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { }} >
 
+                                <Image source={require('../images/sync.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
+
+                            </View>
+
+
+                            <TouchableOpacity style={{ flex: .60 }}
+                                onPress={() => { }} >
+
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.syncstatusvalue}</Text>
+
+
+
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { }} >
+
+                                <Switch
+                                    onValueChange={this.togglesyncstatus}
+                                    value={this.state.syncstatus} />
+
+                            </TouchableOpacity>
 
                         </View>
 
-
-                        <TouchableOpacity style={{ flex: .60 }}
-                            onPress={() => { }} >
-
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.syncstatusvalue}</Text>
-
-
-
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-                            onPress={() => { }} >
-
-                            <Switch
-                                onValueChange={this.togglesyncstatus}
-                                value={this.state.syncstatus} />
-
-                        </TouchableOpacity>
-
-                    </View>
-
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1,
-                            opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-                    <View style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}>
+                        <View
+                            style={{
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                marginTop: 10
+                            }}
+                        />
 
                         <View style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
-                        }}
-                            onPress={() => { }} >
+                            flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
+                        }}>
 
-                            <Image source={require('../images/bluetooth.png')}
-                                style={styles.ImageIconStyle}
-                            />
+                            <View style={{
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { }} >
 
+                                <Image source={require('../images/bluetooth.png')}
+                                    style={styles.ImageIconStyle}
+                                />
+
+
+                            </View>
+
+
+                            <TouchableOpacity style={{ flex: .60 }}
+                                onPress={() => { }} >
+
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.bluetoothstatusvalue}</Text>
+
+
+
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { }} >
+
+                                <Switch
+                                    onValueChange={this.togglebluettothstatus}
+                                    value={this.state.bluetoothstatus} />
+
+                            </TouchableOpacity>
 
                         </View>
 
-
-                        <TouchableOpacity style={{ flex: .60 }}
-                            onPress={() => { }} >
-
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.bluetoothstatusvalue}</Text>
-
-
-
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-                            onPress={() => { }} >
-
-                            <Switch
-                                onValueChange={this.togglebluettothstatus}
-                                value={this.state.bluetoothstatus} />
-
-                        </TouchableOpacity>
-
-                    </View>
-
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1,
-                            opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-                    <TouchableOpacity style={{
-                        flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
-                    }}
-                        onPress={() => { this.logoutcall() }}>
+                        <View
+                            style={{
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                marginTop: 10
+                            }}
+                        />
 
                         <TouchableOpacity style={{
-                            flex: .15, alignItems: 'center', justifyContent: 'center',
-                            alignContent: 'center', marginLeft: 15
+                            flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
                         }}
                             onPress={() => { this.logoutcall() }}>
 
-                            <Image source={require('../images/logout_icon.png')}
-                                style={styles.logouticonStyle}
-                            />
+                            <TouchableOpacity style={{
+                                flex: .15, alignItems: 'center', justifyContent: 'center',
+                                alignContent: 'center', marginLeft: 15
+                            }}
+                                onPress={() => { this.logoutcall() }}>
 
+                                <Image source={require('../images/logout_icon.png')}
+                                    style={styles.logouticonStyle}
+                                />
+
+
+                            </TouchableOpacity>
+
+
+                            <TouchableOpacity style={{ flex: .60 }}
+                                onPress={() => { this.logoutcall() }}>
+
+                                <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>logout</Text>
+
+
+                            </TouchableOpacity>
+
+                            <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
+                                onPress={() => { this.props.navigation.navigate('Login') }}>
+
+
+                            </TouchableOpacity>
 
                         </TouchableOpacity>
 
-
-                        <TouchableOpacity style={{ flex: .60 }}
-                            onPress={() => { this.logoutcall() }}>
-
-                            <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>logout</Text>
-
-
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={{ flex: .25, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}
-                            onPress={() => { this.props.navigation.navigate('Login') }}>
+                        <View
+                            style={{
+                                borderBottomColor: 'grey',
+                                borderBottomWidth: 1,
+                                opacity: .5,
+                                marginTop: 10
+                            }}
+                        />
 
 
-                        </TouchableOpacity>
 
-                    </TouchableOpacity>
-
-                    <View
-                        style={{
-                            borderBottomColor: 'grey',
-                            borderBottomWidth: 1,
-                            opacity:.5,
-                            marginTop: 10
-                        }}
-                    />
-
-
-                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>device id + {deviceId}</Text>
-
-
+                    </ScrollView>
                 </View>
+
 
 
                 <View style={styles.tabStyle}>
@@ -804,6 +810,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         height: 60,
         margin: 5,
+        flex: .1,
         shadowColor: '#ecf6fb',
         elevation: 20,
         shadowColor: 'grey',
@@ -890,6 +897,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         height: 50,
+        flex: .1,
         backgroundColor: '#0081C9'
     },
     screentitle: {

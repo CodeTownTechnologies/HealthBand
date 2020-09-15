@@ -192,11 +192,11 @@ class DashboardActivity extends Component {
         var str6 = str4[21];
         var str7 = str6.replace('mRssi=', '');
         let rssi = str7.replace(',', '')
-        console.log("rssi==== " + JSON.stringify(rssi))
+       // console.log("rssi==== " + JSON.stringify(rssi))
 
         this.hideLoading();
 
-        console.log("heart rate====" + telemetry.heart_rate);
+      //  console.log("heart rate====" + telemetry.heart_rate);
 
         data.push({
             device_address: str5.toLowerCase(),
@@ -240,7 +240,7 @@ class DashboardActivity extends Component {
             .then(response => response)
             .then(responseData => {
                 this.hideLoading();
-             //   console.log('response object:', responseData);
+               console.log('response object:', responseData);
 
             })
             .catch(error => {
