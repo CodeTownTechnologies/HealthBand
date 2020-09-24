@@ -4,10 +4,12 @@ import {
     View,
     Text,
     Image,
-    ActivityIndicator
+    ActivityIndicator,
+    Alert
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import AsyncStorage from '@react-native-community/async-storage';
+import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 
 
 class SplashActivity extends Component {
@@ -45,21 +47,80 @@ class SplashActivity extends Component {
 
     load = () => {
 
-        this.showLoading();
-
-        this.timeoutHandle = setTimeout(() => {
-            // Add your logic for the transition
-
-            AsyncStorage.getItem('@is_login').then((isLogin) => {
-                if (isLogin == undefined || isLogin == "0") {
-                    this.props.navigation.navigate('Login')
-                } else if (isLogin == "1") {
-                   this.props.navigation.navigate('Dashboard')
-               }
-           });
 
 
-        }, 4000);
+        BluetoothStateManager.getState().then(bluetoothState => {
+            switch (bluetoothState) {
+                case 'Unknown':
+                    console.log('Unknown ===');
+                    break;
+                case 'Resetting':
+                    console.log('Resetting ===');
+                    break;
+                case 'Unsupported':
+                    console.log('Unsupported ===');
+                    break;
+                case 'Unauthorized':
+                    console.log('Unauthorized ===');
+                    break;
+                case 'PoweredOff':
+
+                    Alert.alert('', 'Please turn on your bluetooth',
+                        [
+                            // { text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel' },
+                            {
+                                text: 'allow', onPress: () => {
+
+                                    BluetoothStateManager.enable().then(result => {
+                                        //   console.log('result====' + result)  
+                                        // do something...
+
+                                        AsyncStorage.getItem('@is_login').then((isLogin) => {
+                                            if (isLogin == undefined || isLogin == "0") {
+                                                this.props.navigation.navigate('Login')
+                                            } else if (isLogin == "1") {
+                                                this.props.navigation.navigate('Dashboard')
+                                            }
+                                        });
+
+
+                                    });
+
+                                }
+                            },
+                        ])
+                    console.log('powered off===');
+                    break;
+                case 'PoweredOn':
+
+                    this.showLoading();
+
+                    this.timeoutHandle = setTimeout(() => {
+                        //   Add your logic for the transition
+                        AsyncStorage.getItem('@is_login').then((isLogin) => {
+                            if (isLogin == undefined || isLogin == "0") {
+                                this.props.navigation.navigate('Login')
+                            } else if (isLogin == "1") {
+                                this.props.navigation.navigate('Dashboard')
+                            }
+                        });
+
+                    }, 4000);
+
+                    console.log('PoweredOn ===');
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+
+
+
+
+
+
     }
 
 

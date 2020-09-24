@@ -9,9 +9,10 @@ import {
     Platform,
     Linking,
     YellowBox,
-    StatusBar
+    StatusBar,
+    PermissionsAndroid,
+    Alert
 } from 'react-native';
-import { Header, Colors } from 'react-native/Libraries/NewAppScreen';
 import Toast from 'react-native-simple-toast';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
@@ -19,8 +20,10 @@ import stringsoflanguages from '../screens/locales/stringsoflanguages';
 import CustomMenuIcon from './custommenu/CustomMenuIcon';
 import Eddystone from "@lg2/react-native-eddystone";
 import DeviceInfo from 'react-native-device-info';
-
+import AsyncStorage from '@react-native-community/async-storage';
 import BackgroundJob from 'react-native-background-actions';
+import Geolocation from 'react-native-geolocation-service';
+import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 
 var data = [];
 var strdata = "", deviceId;
@@ -44,19 +47,19 @@ const taskRandom = async taskData => {
             try {
                 setInterval(async () => {
                     if (strdata != "") {
-                      //  console.log('str data interval===' + JSON.stringify(strdata))
+                        //  console.log('str data interval===' + JSON.stringify(strdata))
 
 
                         Toast.show('Api calling', Toast.LONG);
                         console.log("strdata in api====" + JSON.stringify(strdata));
-                      
 
-                    //    this.callApi();
-                     
+
+                        // this.callApi();
+
                     }
 
 
-                }, 60000);
+                }, 1000);
             } catch (e) {
                 console.log(e);
             }
@@ -79,16 +82,9 @@ const options = {
     color: '#0081C9',
     // linkingURI: 'exampleScheme://chat/jane',
     parameters: {
-        delay: 60000,
+        delay: 1000,
     },
 };
-
-// function handleOpenURL(evt) {
-//     console.log(evt.url);
-//     // do something with the url
-// }
-
-//Linking.addEventListener('url', handleOpenURL);
 
 
 class DashboardActivity extends Component {
@@ -104,6 +100,10 @@ class DashboardActivity extends Component {
             date: '',
             url: 'http://process.trackany.live/asset_process/device_received_data_eddystone.php?SubscriberName=Zone/',
             devicelisturl: 'http://process.trackany.live/mobileapp/native/mBLEdevice.php?',
+            temp: '',
+            heartRate: '',
+            oxygen: ''
+
         };
     }
 
@@ -127,61 +127,101 @@ class DashboardActivity extends Component {
         deviceId = DeviceInfo.getUniqueId();
         console.log('device id ===' + deviceId)
 
+
+        AsyncStorage.getItem('@temp').then((temp) => {
+            if (temp) {
+                this.setState({ temp: temp });
+                console.log("temp data ====" + this.state.temp);
+            }
+        });
+
+        AsyncStorage.getItem('@heartRate').then((heartRate) => {
+            console.log('heart rate===' + heartRate)
+            if (heartRate) {
+                this.setState({ heartRate: heartRate });
+                console.log("heartRate ====" + this.state.heartRate);
+            }
+        });
+
+        AsyncStorage.getItem('@oxygen').then((oxygen) => {
+            if (oxygen) {
+                this.setState({ oxygen: oxygen });
+                console.log("oxygen ====" + this.state.oxygen);
+            }
+        });
+
+
+
+        BluetoothStateManager.getState().then(bluetoothState => {
+            switch (bluetoothState) {
+                case 'Unknown':
+                    console.log('Unknown ===');
+                    break;
+                case 'Resetting':
+                    console.log('Resetting ===');
+                    break;
+                case 'Unsupported':
+                    console.log('Unsupported ===');
+                    break;
+                case 'Unauthorized':
+                    console.log('Unauthorized ===');
+                    break;
+                case 'PoweredOff':
+                    console.log('powered off===');
+                    break;
+                case 'PoweredOn':
+                    console.log('PoweredOn ===');
+                    Eddystone.addListener('onTelemetryFrame', this.onTelemetry);
+                    this.showLoading();
+                    Toast.show('scanning start', Toast.LONG);
+                    Eddystone.startScanning();
+
+
+                    try {
+                        setInterval(async () => {
+                            if (strdata != "") {
+                                this.callApi();
+                                strdata = "";
+                            }
+                        }, 1000);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                    break;
+
+                default:
+                    break;
+            }
+        });
+
+
+
         this.playing = !this.playing;
         if (this.playing) {
             try {
                 console.log('Trying to start background service');
-                 BackgroundJob.start(taskRandom, options);
-              
+                BackgroundJob.start(taskRandom, options);
+
                 console.log('Successful start!');
             } catch (e) {
                 console.log('Error', e);
             }
-        } 
-        
-      //  else {
-          //  console.log('Stop background service');
-          //  await BackgroundJob.stop();
-     //   }
+        }
 
-      //  this.toggleBackground();
         //  this.devicelist();
 
-        //  var that = this;
-        var date = new Date().getDate(); //Current Date
-        var month = new Date().getMonth() + 1; //Current Month
-        var year = new Date().getFullYear(); //Current Year
-        var hours = new Date().getHours(); //Current Hours
-        var min = new Date().getMinutes(); //Current Minutes
-        var sec = new Date().getSeconds(); //Current Seconds
-
-        var date_new = date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec;
 
 
-        this.setState({ date: date_new });
-
-        Eddystone.addListener('onTelemetryFrame', this.onTelemetry);
-        this.showLoading();
-        Toast.show('scanning start', Toast.LONG);
-        Eddystone.startScanning();
-
-
-        try {
-            setInterval(async () => {
-                if(strdata!=""){
-              this.callApi();
-                  strdata="";
-                }
-            }, 60000);
-          } catch(e) {
-            console.log(e);
-          }
     }
+
+
+
 
 
     onTelemetry(telemetry) {
 
-      // console.log("telemetry==== " + JSON.stringify(telemetry))
+        //    console.log("telemetery data ==== " + JSON.stringify(telemetry))
+
         var str1 = telemetry.result.replace('ScanResult{', '')
         let str2 = str1.replace('mDevice=', '')
         let str3 = str2.replace(',', '')
@@ -192,11 +232,20 @@ class DashboardActivity extends Component {
         var str6 = str4[21];
         var str7 = str6.replace('mRssi=', '');
         let rssi = str7.replace(',', '')
-       // console.log("rssi==== " + JSON.stringify(rssi))
+
 
         this.hideLoading();
 
-      //  console.log("heart rate====" + telemetry.heart_rate);
+
+        var date = new Date().getDate(); //Current Date
+        var month = new Date().getMonth() + 1; //Current Month
+        var year = new Date().getFullYear(); //Current Year
+        var hours = new Date().getHours(); //Current Hours
+        var min = new Date().getMinutes(); //Current Minutes
+        var sec = new Date().getSeconds(); //Current Seconds
+
+        var date_new = date + '/' + month + '/' + year + ' ' + hours + ':' + min + ':' + sec;
+
 
         data.push({
             device_address: str5.toLowerCase(),
@@ -205,16 +254,35 @@ class DashboardActivity extends Component {
             temp: telemetry.tempnew,
             heart_rate: telemetry.heart_rate,
             oxygen: telemetry.oxygen,
-            date: this.state.date
+            date: date_new
         });
 
         // console.log("data ==== " + JSON.stringify(data))
+
 
 
         this.setState({ data: data })
 
         if (data.length > 0) {
             for (let i = 0; i < data.length; i++) {
+
+
+                var tempinf = (parseInt(data[i].temp) * 9 / 5) + 32;
+
+                console.log('temp in f====' + tempinf)
+
+                this.setState({ temp: tempinf.toString() })
+                this.setState({ heartRate: data[i].heart_rate })
+                this.setState({ oxygen: data[i].oxygen })
+
+                // console.log('heart rate state===' + this.state.heartRate)
+                //  console.log('heart rate [i]]===' + data[i].heart_rate)
+
+                AsyncStorage.setItem('@temp', tempinf.toString())
+                AsyncStorage.setItem('@heartRate', data[i].heart_rate.toString())
+                AsyncStorage.setItem('@oxygen', data[i].oxygen.toString())
+
+
                 strdata = "|" + data[i].device_address + "," + data[i].rssi + "," + data[i].dir + "," + data[i].temp + "," + data[i].heart_rate + "," + data[i].oxygen + "," + data[i].date;
             }
         }
@@ -226,7 +294,7 @@ class DashboardActivity extends Component {
 
     callApi() {
         Toast.show('Api calling', Toast.LONG);
-        console.log("strdata in api====" + JSON.stringify(strdata));
+        //  console.log("strdata in api====" + JSON.stringify(strdata));
         var url = this.state.url + deviceId;
         console.log('url:' + url);
         fetch(url, {
@@ -240,7 +308,7 @@ class DashboardActivity extends Component {
             .then(response => response)
             .then(responseData => {
                 this.hideLoading();
-               console.log('response object:', responseData);
+                console.log('response object:', responseData);
 
             })
             .catch(error => {
@@ -307,7 +375,7 @@ class DashboardActivity extends Component {
             try {
                 console.log('Trying to start background service');
                 await BackgroundJob.start(taskRandom, options);
-              
+
                 console.log('Successful start!');
             } catch (e) {
                 console.log('Error', e);
@@ -321,15 +389,26 @@ class DashboardActivity extends Component {
     render() {
         return (
             <>
-                {/* <StatusBar barStyle="dark-content" /> */}
+
                 <SafeAreaView style={styles.container}>
 
                     <View style={styles.headerView}>
-                        <TouchableOpacity
-                           onPress={this.toggleBackground}
-                            style={{ alignItems: 'center', justifyContent: 'center', flex: .8 }}>
+                        <View
 
-                            <Text style={styles.screentitle}>{deviceId}</Text>
+                            style={{ alignItems: 'center', justifyContent: 'center', flex: .2 }}>
+
+
+
+                        </View>
+
+                        <TouchableOpacity
+                            onPress={this.toggleBackground}
+                            style={{ alignItems: 'center', justifyContent: 'center', flex: .6 }}>
+
+                            {/* <Text style={styles.screentitle}>{deviceId}</Text> */}
+
+                            <Text style={styles.screenHeading}>Smart Wristband</Text>
+
 
                         </TouchableOpacity>
                         <TouchableOpacity style={{ alignItems: 'center', justifyContent: 'center', flex: .2 }}>
@@ -400,7 +479,7 @@ class DashboardActivity extends Component {
                                     <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
 
-                                        <Text style={styles.screentitle}>94.03 F</Text>
+                                        <Text style={styles.screentitle}>{this.state.temp} F</Text>
 
 
 
@@ -457,7 +536,7 @@ class DashboardActivity extends Component {
 
 
 
-                                        <Text style={styles.screentitle}>74 bpm</Text>
+                                        <Text style={styles.screentitle}>{this.state.heartRate} bpm</Text>
 
                                     </View>
 
@@ -506,7 +585,7 @@ class DashboardActivity extends Component {
 
                                     <View style={{ flex: .5, flexDirection: 'column', justifyContent: 'center' }}>
 
-                                        <Text style={styles.screentitle}>96%</Text>
+                                        <Text style={styles.screentitle}>{this.state.oxygen}%</Text>
 
 
 
@@ -711,10 +790,18 @@ const styles = StyleSheet.create({
     },
     screentitle: {
         color: "white",
-        fontSize: 10,
+        fontSize: 14,
         textAlign: 'center',
         fontWeight: 'bold'
     },
+    screenHeading: {
+        color: "white",
+        fontSize: 20,
+        textAlign: 'center',
+        fontWeight: 'bold'
+    },
+
+
     CircleShapeView: {
         width: 70,
         height: 70,
@@ -804,7 +891,7 @@ const styles = StyleSheet.create({
     },
     boxtitle: {
         color: "white",
-        fontSize: 20,
+        fontSize: 15,
         marginLeft: 10,
         textAlign: 'center'
     },

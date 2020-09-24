@@ -34,6 +34,7 @@ class SettingsActivity extends Component {
             bluetoothstatus: true,
             bluetoothstatusvalue: 'ON',
             logouturl: 'http://process.trackany.live/mobileapp/native/logout.php?',
+            deviceId:''
 
 
         };
@@ -55,6 +56,7 @@ class SettingsActivity extends Component {
     componentDidMount() {
 
         deviceId = DeviceInfo.getUniqueId();
+        this.setState({deviceId:deviceId})
 
         console.log('device id====' + deviceId)
 
@@ -630,6 +632,7 @@ class SettingsActivity extends Component {
                             }}
                         />
 
+<Text style={styles.informationtextstyle}>Device ID:  {this.state.deviceId} </Text>
 
 
                     </ScrollView>
@@ -682,13 +685,12 @@ class SettingsActivity extends Component {
 
 
                     </TouchableOpacity>
-
+                    
 
 
                 </View>
 
-
-
+             
 
             </SafeAreaView>
         );
@@ -746,6 +748,13 @@ const styles = StyleSheet.create({
     bottomactivetextstyle: {
         color: "#0081C9",
         fontSize: 8,
+        marginTop: 5,
+        textAlign: 'center'
+    },
+    informationtextstyle: {
+        color: "#0081C9",
+        fontSize: 8,
+        marginBottom:10,
         marginTop: 5,
         textAlign: 'center'
     },

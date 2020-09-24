@@ -228,7 +228,7 @@ class AddBluetoothDeviceActivity extends Component {
                                 mode="date"
                                 placeholder="select date"
                                 format="DD-MM-YYYY"
-                                minDate="01-01-2020"
+                                minDate="01-01-1920"
                                 maxDate="01-12-2050"
                                 confirmBtnText="Confirm"
                                 cancelBtnText="Cancel"

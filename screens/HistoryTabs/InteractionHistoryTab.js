@@ -435,13 +435,13 @@ const styles = StyleSheet.create({
     },
     activeTabTextStyle: {
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 10,
         color: 'white',
         alignContent: 'center',
     },
     inactiveTabTextStyle: {
         textAlign: 'center',
-        fontSize: 16,
+        fontSize: 10,
         color: '#0081C9',
         alignContent: 'center',
     },
