@@ -22,6 +22,7 @@ class SettingsActivity extends Component {
     constructor(props) {
         super(props);
         this.logoutcall = this.logoutcall.bind(this);
+        this.settingCall = this.settingCall.bind(this);
         this.state = {
             tempstatus: false,
             tempstatusvalue: 'Low',
@@ -29,12 +30,18 @@ class SettingsActivity extends Component {
             heartstatusvalue: 'Low',
             spo2status: false,
             spo2statusvalue: 'Low',
-            syncstatus: true,
-            syncstatusvalue: 'Yes',
-            bluetoothstatus: true,
+            syncstatus: false,
+            syncstatusvalue: 'No',
+            bluetoothstatus: false,
             bluetoothstatusvalue: 'ON',
             logouturl: 'http://process.trackany.live/mobileapp/native/logout.php?',
-            deviceId:''
+            settingurl: 'http://process.trackany.live/mobileapp/native/settings.php?org_id=1',
+            deviceId: '',
+            oxygen_min: '',
+            oxygen_max: '',
+            heart_min: '',
+            heart_max: '',
+            temp: ''
 
 
         };
@@ -56,9 +63,12 @@ class SettingsActivity extends Component {
     componentDidMount() {
 
         deviceId = DeviceInfo.getUniqueId();
-        this.setState({deviceId:deviceId})
+        this.setState({ deviceId: deviceId })
 
         console.log('device id====' + deviceId)
+
+        this.showLoading();
+        this.settingCall();
 
     }
 
@@ -252,6 +262,68 @@ class SettingsActivity extends Component {
     }
 
 
+    settingCall() {
+
+        console.log('device id ===' + deviceId)
+
+        var url = this.state.settingurl;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'GET'
+            // headers: {
+            //     'Content-Type': 'multipart/form-data',
+            // },
+            //  body: formdata
+        }).then((response) => response.json())
+            .then(responseJson => {
+                this.hideLoading();
+
+                //     console.log("response json===" + JSON.stringify(responseJson[0].data_synchronization))
+
+
+                var tempinf = (parseInt(responseJson[0].temp_high) * 9 / 5) + 32;
+                this.setState({ temp: tempinf })
+                this.setState({ oxygen_min: responseJson[0].blood_oxygen_low })
+                this.setState({ oxygen_max: responseJson[0].blood_oxygen_high })
+                this.setState({ heart_min: responseJson[0].heart_rate_low })
+                this.setState({ heart_max: responseJson[0].heart_rate_high })
+
+
+                if (responseJson[0].location == "1") {
+                    this.setState({ syncstatus: true })
+                    this.setState({ syncstatusvalue: 'Yes' })
+
+                } else {
+                    this.setState({ syncstatus: false })
+                    this.setState({ syncstatusvalue: 'No' })
+                }
+
+
+                if (responseJson[0].data_synchronization == "1") {
+                    this.setState({ bluetoothstatus: true })
+                    this.setState({ bluetoothstatusvalue: 'ON' })
+
+                } else {
+                    this.setState({ bluetoothstatus: false })
+                    this.setState({ bluetoothstatusvalue: 'OFF' })
+                }
+
+
+
+
+                console.log("response json===" + JSON.stringify(responseJson))
+
+
+
+            }).catch(err => {
+                this.hideLoading();
+                console.log(err)
+            })
+
+    }
+
+
+
 
 
 
@@ -311,7 +383,7 @@ class SettingsActivity extends Component {
                                     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
                                 }}>
 
-                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110.0F</Text>
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.temp}F</Text>
 
                                 </View>
 
@@ -356,7 +428,7 @@ class SettingsActivity extends Component {
                                     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
                                 }}>
 
-                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>50</Text>
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.heart_min}</Text>
 
                                 </View>
 
@@ -370,7 +442,7 @@ class SettingsActivity extends Component {
                                     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
                                 }}>
 
-                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>110</Text>
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.heart_max}</Text>
 
                                 </View>
                             </View>
@@ -414,7 +486,7 @@ class SettingsActivity extends Component {
                                     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
                                 }}>
 
-                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>91</Text>
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.oxygen_min}</Text>
 
                                 </View>
 
@@ -428,7 +500,7 @@ class SettingsActivity extends Component {
                                     flexDirection: 'row', alignItems: 'center', justifyContent: 'center', borderColor: 'black', borderWidth: 1, padding: 10
                                 }}>
 
-                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>100</Text>
+                                    <Text style={{ color: '#4D4D4D', fontSize: RFPercentage(3), textAlign: 'center', fontWeight: 'bold' }}>{this.state.oxygen_max}</Text>
 
                                 </View>
                             </View>
@@ -446,7 +518,7 @@ class SettingsActivity extends Component {
                         />
 
 
-                        <View style={{
+                        {/* <View style={{
                             flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center', width: '100%'
                         }}>
 
@@ -482,9 +554,9 @@ class SettingsActivity extends Component {
 
                             </TouchableOpacity>
 
-                        </View>
+                        </View> */}
 
-                        <View
+                        {/* <View
                             style={{
                                 borderBottomColor: 'grey',
                                 borderBottomWidth: 1,
@@ -492,7 +564,7 @@ class SettingsActivity extends Component {
                                 width: '100%',
                                 marginTop: 10
                             }}
-                        />
+                        /> */}
 
                         <View style={{
                             flexDirection: 'row', marginTop: 20, alignItems: 'center', justifyContent: 'center'
@@ -525,7 +597,6 @@ class SettingsActivity extends Component {
                                 onPress={() => { }} >
 
                                 <Switch
-                                    onValueChange={this.togglesyncstatus}
                                     value={this.state.syncstatus} />
 
                             </TouchableOpacity>
@@ -572,7 +643,7 @@ class SettingsActivity extends Component {
                                 onPress={() => { }} >
 
                                 <Switch
-                                    onValueChange={this.togglebluettothstatus}
+
                                     value={this.state.bluetoothstatus} />
 
                             </TouchableOpacity>
@@ -632,7 +703,7 @@ class SettingsActivity extends Component {
                             }}
                         />
 
-<Text style={styles.informationtextstyle}>Device ID:  {this.state.deviceId} </Text>
+                        <Text style={styles.informationtextstyle}>Device ID:  {this.state.deviceId} </Text>
 
 
                     </ScrollView>
@@ -685,12 +756,12 @@ class SettingsActivity extends Component {
 
 
                     </TouchableOpacity>
-                    
+
 
 
                 </View>
 
-             
+
 
             </SafeAreaView>
         );
@@ -754,7 +825,7 @@ const styles = StyleSheet.create({
     informationtextstyle: {
         color: "#0081C9",
         fontSize: 8,
-        marginBottom:10,
+        marginBottom: 10,
         marginTop: 5,
         textAlign: 'center'
     },
