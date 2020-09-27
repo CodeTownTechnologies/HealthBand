@@ -16,6 +16,7 @@ import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from './locales/stringsoflanguages';
 import DeviceInfo from 'react-native-device-info';
 import Toast from 'react-native-simple-toast';
+import AsyncStorage from '@react-native-community/async-storage';
 
 var deviceId;
 
@@ -118,6 +119,9 @@ class AddBluetoothDeviceActivity extends Component {
         }).then((response) => response.json())
             .then(responseJson => {
                 this.hideLoading();
+
+
+                AsyncStorage.setItem('@mac_address', this.state.mac_address);
 
                 //   console.log("response json===" + JSON.stringify(responseJson))
                 Toast.show(responseJson.setDeviceDetails, Toast.LONG);

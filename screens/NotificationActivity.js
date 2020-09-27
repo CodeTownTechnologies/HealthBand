@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../screens/locales/stringsoflanguages';
+import AsyncStorage from '@react-native-community/async-storage';
 
 
 function Item({ item }) {
@@ -32,13 +33,13 @@ function Item({ item }) {
 
                         <View style={{ flex: .70, flexDirection: 'column', justifyContent: 'center', marginLeft: 10 }}>
 
-                            <Text style={{ color: 'black', fontSize: RFValue(14, 580) }}>{item.title}</Text>
+                            <Text style={{ color: 'black', fontSize: RFValue(14, 580) }}>BE CAREFUL</Text>
                         </View>
 
                     </View>
 
-                    <Text style={{ color: '#808080', fontSize: RFValue(12, 580) }}>{item.name}</Text>
-                    <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.time}</Text>
+                    <Text style={{ color: '#808080', fontSize: RFValue(12, 580) }}>you increased your interaction in the last hour by 1.</Text>
+                    <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.notification_dt}</Text>
                 </View>
 
             </View>
@@ -51,61 +52,10 @@ class NotificationActivity extends Component {
 
     constructor(props) {
         super(props);
-        //  this.videoList = this.videoList.bind(this);
+        this.notificationList = this.notificationList.bind(this);
         this.state = {
-            //    baseUrl: 'https://digimonk.co/fitness/api/Api/videoList',
-            data: [
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "01/05/2020 12:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "02/05/2020 1:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "03/05/2020 2:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "04/05/2020 3:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "05/05/2020 4:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "06/05/2020 5:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "07/05/2020 6:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "08/05/2020 7:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "09/05/2020 8:00 AM",
-                },
-                {
-                    "title": "BE CAREFUL",
-                    "name": "you increased your interaction in the last hour by 1. ",
-                    "time": "10/05/2020 9:00 AM",
-                },
-            ]
+            url: 'http://process.trackany.live/mobileapp/native/getNotifications.php?',
+            mac_address:''
         };
     }
 
@@ -123,53 +73,49 @@ class NotificationActivity extends Component {
     };
 
     componentDidMount() {
-        //  this.videoList();
+
+        //this.showLoading();
+        AsyncStorage.getItem('@mac_address').then((mac_address) => {
+            if (mac_address) {
+                this.setState({ mac_address: mac_address });
+                console.log("mac data ====" + this.state.mac_address);
+                this.notificationList();
+            }
+        });
 
     }
 
-    // videoList() {
 
-    //     var url = this.state.baseUrl;
-    //     console.log('url:' + url);
-    //     fetch(url, {
-    //       method: 'GET',
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //       },
-    //     //   body: JSON.stringify({
-    //     //     secure_pin: 'digimonk',
-    //     //     customer_id: this.state.userId
-    //     //   }),
-    //     })
-    //       .then(response => response.json())
-    //       .then(responseData => {
-    //         this.hideLoading();
-    //         if (responseData.status == '0') {
-    //           alert(responseData.message);
-    //         } else {
-    //           this.setState({ data: responseData.data});
-    //         }
+    notificationList() {
 
-    //         console.log('response object:', responseData);
-    //       })
-    //       .catch(error => {
-    //         this.hideLoading();
-    //         console.error(error);
-    //       })
+        var url = this.state.url + 'ble_mac=' + this.state.mac_address;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(responseData => {
+                this.hideLoading();
 
-    //       .done();
-    //   }
+                if (responseData.status == '0') {
+                    alert(responseData.message);
+                } else {
+                    this.setState({ data: responseData });
+                }
 
-    actionOnRow(item) {
+                console.log('response object:', responseData);
+            })
+            .catch(error => {
+                this.hideLoading();
+                console.error(error);
+            })
 
-        // this.props.navigation.navigate('QuestionLogDetail', {
-        //   item: item,
-        //   question_id: item.question_id
-        // })
-
-        // console.log('Selected Item :', item);
-
+            .done();
     }
+
 
     render() {
         return (
