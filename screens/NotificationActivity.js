@@ -74,7 +74,7 @@ class NotificationActivity extends Component {
 
     componentDidMount() {
 
-        //this.showLoading();
+        this.showLoading();
         AsyncStorage.getItem('@mac_address').then((mac_address) => {
             if (mac_address) {
                 this.setState({ mac_address: mac_address });

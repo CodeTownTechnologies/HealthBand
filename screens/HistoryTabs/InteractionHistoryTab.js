@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../locales/stringsoflanguages';
+import AsyncStorage from '@react-native-community/async-storage';
+
 
 
 function Item({ item }) {
@@ -32,13 +34,13 @@ function Item({ item }) {
 
                         <View style={{ flex: .70, flexDirection: 'column', justifyContent: 'center'}}>
 
-                            <Text style={{ color: 'black', fontSize: RFValue(14, 580) }}>{item.title}</Text>
+                            <Text style={{ color: 'black', fontSize: RFValue(14, 580) }}>{item.ble_name}</Text>
                         </View>
 
                     </View>
 
-                    <Text style={{ color: '#808080', fontSize: RFValue(12, 580) }}>{item.name}</Text>
-                    <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.time}</Text>
+                    <Text style={{ color: '#808080', fontSize: RFValue(12, 580) }}>{item.interaction_with_ble_name}</Text>
+                    <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.interaction_dt}</Text>
                 </View>
 
             </View>
@@ -51,61 +53,9 @@ class InteractionHistoryTab extends Component {
 
     constructor(props) {
         super(props);
-        //  this.videoList = this.videoList.bind(this);
+        this.interactionhistory = this.interactionhistory.bind(this);
         this.state = {
-            //    baseUrl: 'https://digimonk.co/fitness/api/Api/videoList',
-            data: [
-                {
-                    "title": "Arjun Kumar",
-                    "name": "office",
-                    "time": "01/05/2020 12:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "office",
-                    "time": "02/05/2020 1:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "office",
-                    "time": "03/05/2020 2:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "04/05/2020 3:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "05/05/2020 4:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "06/05/2020 5:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "07/05/2020 6:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "08/05/2020 7:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "09/05/2020 8:00 AM",
-                },
-                {
-                    "title": "Arjun Kumar",
-                    "name": "canteen",
-                    "time": "10/05/2020 9:00 AM",
-                },
-            ]
+            url: 'http://process.trackany.live/mobileapp/native/getInteractionHistory.php?',
         };
     }
 
@@ -119,13 +69,52 @@ class InteractionHistoryTab extends Component {
     }
 
     static navigationOptions = {
-        title: 'Notification'
+        title: 'interaction history'
     };
 
     componentDidMount() {
-        //  this.videoList();
+        this.showLoading();
+        AsyncStorage.getItem('@mac_address').then((mac_address) => {
+            if (mac_address) {
+                this.setState({ mac_address: mac_address });
+                console.log("mac data ====" + this.state.mac_address);
+                this.interactionhistory();
+            }
+        });
 
     }
+
+
+    interactionhistory() {
+
+        var url = this.state.url + 'ble_mac=' + this.state.mac_address;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(responseData => {
+                this.hideLoading();
+
+                if (responseData.status == '0') {
+                    alert(responseData.message);
+                } else {
+                    this.setState({ data: responseData });
+                }
+
+                console.log('response object:', responseData);
+            })
+            .catch(error => {
+                this.hideLoading();
+                console.error(error);
+            })
+
+            .done();
+    }
+
 
 
     render() {
@@ -448,4 +437,3 @@ const styles = StyleSheet.create({
 });
 
 export default InteractionHistoryTab;
-
