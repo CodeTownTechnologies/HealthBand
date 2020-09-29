@@ -6,6 +6,7 @@ import {
     FlatList,
     TouchableOpacity,
     Image,
+    ActivityIndicator,
     SafeAreaView,
     TouchableWithoutFeedback,
     ImageBackground
@@ -39,6 +40,7 @@ function Item({ item }) {
                     </View>
 
                     <Text style={{ color: '#808080', fontSize: RFValue(12, 580) }}>you increased your interaction in the last hour by 1.</Text>
+                    <Text style={{ color: '#0081C9', fontSize: RFValue(12, 580) }}>Interaction with {item.ble_name}</Text>
                     <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.notification_dt}</Text>
                 </View>
 
@@ -55,7 +57,8 @@ class NotificationActivity extends Component {
         this.notificationList = this.notificationList.bind(this);
         this.state = {
             url: 'http://process.trackany.live/mobileapp/native/getNotifications.php?',
-            mac_address:''
+            mac_address: '',
+            isnoDataVisible: false,
         };
     }
 
@@ -100,11 +103,20 @@ class NotificationActivity extends Component {
             .then(responseData => {
                 this.hideLoading();
 
-                if (responseData.status == '0') {
-                    alert(responseData.message);
+                // if (responseData.status == '0') {
+                //     alert(responseData.message);
+                // } else {
+                //     this.setState({ data: responseData });
+                // }
+
+                if (responseData == '') {
+                    this.setState({ isnoDataVisible: true })
                 } else {
+                    this.setState({ isnoDataVisible: false })
                     this.setState({ data: responseData });
+
                 }
+
 
                 console.log('response object:', responseData);
             })
@@ -115,6 +127,21 @@ class NotificationActivity extends Component {
 
             .done();
     }
+
+    ListEmpty = () => {
+        return (
+            //View to show when list is empty
+
+            <View style={styles.container}>
+                {
+                    this.state.isnoDataVisible ?
+                        <Text style={{ textAlign: 'center' }}>No Data Found</Text>
+                        : null
+                }
+            </View>
+
+        );
+    };
 
 
     render() {
@@ -144,6 +171,14 @@ class NotificationActivity extends Component {
                             tintColor='#FFC33B'
                         />
                     }> */}
+
+
+                {this.state.loading && (
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#0094CD" />
+                    </View>
+                )}
+
 
                 <FlatList
                     style={{ flex: 1 }}

@@ -103,8 +103,6 @@ class InteractionHistoryTab extends Component {
             .then(responseData => {
                 this.hideLoading();
 
-
-
                 if (responseData == '') {
                     this.setState({ isnoDataVisible: true })
                   } else {

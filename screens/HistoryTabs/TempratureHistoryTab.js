@@ -28,7 +28,7 @@ function Item({ item }) {
                         <View style={{ flexDirection: 'row', justifyContent: 'center', justifyContent: 'center' }}>
 
                             <Text style={{ color: 'black', fontSize: RFValue(12, 580), textAlign: 'left', flex: .5 }}>Temprature</Text>
-                            <Text style={{ color: '#949494', fontSize: RFValue(12, 580), textAlign: 'right', flex: .5 }}>{item.ble_temp} F</Text>
+                            <Text style={{ color: '#949494', fontSize: RFValue(12, 580), textAlign: 'right', flex: .5 }}>{(parseInt(item.ble_temp) * 9 / 5) + 32} F</Text>
 
                         </View>
 

@@ -7,6 +7,7 @@ import {
     Image,
     TextInput,
     SafeAreaView,
+    ActivityIndicator,
     Switch
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
@@ -42,7 +43,6 @@ class SettingsActivity extends Component {
             heart_min: '',
             heart_max: '',
             temp: ''
-
 
         };
     }
@@ -346,6 +346,12 @@ class SettingsActivity extends Component {
                 </View>
 
 
+                {this.state.loading && (
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#0094CD" />
+                    </View>
+                )}
+
                 <View style={{ flexDirection: 'column', backgroundColor: 'white', flex: .8, width: '100%' }}>
 
                     <ScrollView>
@@ -391,6 +397,10 @@ class SettingsActivity extends Component {
                             </View>
 
                         </View>
+
+                    
+
+
 
                         <View
                             style={{

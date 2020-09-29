@@ -5,7 +5,8 @@ import {
     Text,
     TextInput,
     TouchableOpacity,
-    Image
+    Image,
+    ActivityIndicator
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from './locales/stringsoflanguages';
@@ -179,22 +180,13 @@ class LoginActivity extends Component {
 
                     </TouchableOpacity>
 
-                    {/* <Text style={styles.forgotpasswordtext} onPress={() => this.props.navigation.navigate('ForgotPassword')}>Forgot Password?</Text> */}
+                    {this.state.loading && (
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#0094CD" />
+                    </View>
+                )}
 
-                    {/* 
-                    <View style={{ flexDirection: 'column', alignItems: 'center' }}>
-
-                        <View style={{ flexDirection: 'row', flex: .5 }}>
-
-                            <Text style={styles.createnewaccounttext} onPress={() => this.props.navigation.navigate('Signup')}>Don't have an account?</Text>
-
-
-                            <Text style={styles.signuptext} onPress={() => this.props.navigation.navigate('Signup')}>Sign Up</Text>
-
-
-                        </View>
-
-                    </View> */}
+                 
 
                 </View>
 

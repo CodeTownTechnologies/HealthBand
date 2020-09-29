@@ -128,15 +128,9 @@ class DashboardActivity extends Component {
         
         deviceId = DeviceInfo.getUniqueId();
         console.log('device id ===' + deviceId)
-        this.requestLocationPermission()
+      //  this.requestLocationPermission()
        // this.showLoading();
-        // AsyncStorage.getItem('@mac_address').then((mac_address) => {
-        //     if (mac_address) {
-        //         this.setState({ mac_address: mac_address });
-        //         console.log("mac data ====" + this.state.mac_address);
-        //         this.dashboardCall();
-        //     }
-        // });
+    
 
 
         AsyncStorage.getItem('@temp').then((temp) => {
@@ -226,29 +220,29 @@ class DashboardActivity extends Component {
     }
 
 
- requestLocationPermission() 
-    {
-      try {
-        const granted =  PermissionsAndroid.request(
-          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-          {
-          //  'title': 'Example App',
-           // 'message': 'Example App access to your location '
+//  requestLocationPermission() 
+//     {
+//       try {
+//         const granted =  PermissionsAndroid.request(
+//           PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+//           {
+//           //  'title': 'Example App',
+//            // 'message': 'Example App access to your location '
 
             
-          }
-        )
-        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-          console.log("You can use the location")
-          alert("You can use the location");
-        } else {
-          console.log("location permission denied")
-          alert("Location permission denied");
-        }
-      } catch (err) {
-        console.warn(err)
-      }
-    }
+//           }
+//         )
+//         if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+//           console.log("You can use the location")
+//           alert("You can use the location");
+//         } else {
+//           console.log("location permission denied")
+//           alert("Location permission denied");
+//         }
+//       } catch (err) {
+//         console.warn(err)
+//       }
+//     }
 
 
     onTelemetry(telemetry) {
