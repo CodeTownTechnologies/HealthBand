@@ -8,7 +8,8 @@ import {
     Image,
     SafeAreaView,
     TouchableWithoutFeedback,
-    ImageBackground
+    ImageBackground,
+    ActivityIndicator
 } from 'react-native';
 import { RFPercentage, RFValue } from "react-native-responsive-fontsize";
 import stringsoflanguages from '../locales/stringsoflanguages';
@@ -26,7 +27,7 @@ function Item({ item }) {
 
                         <View style={{ flexDirection: 'row', justifyContent: 'center', justifyContent: 'center' }}>
 
-                            <Text style={{ color: 'black', fontSize: RFValue(12, 580) , textAlign: 'left', flex: .5 }}>Temprature</Text>
+                            <Text style={{ color: 'black', fontSize: RFValue(12, 580), textAlign: 'left', flex: .5 }}>Temprature</Text>
                             <Text style={{ color: '#949494', fontSize: RFValue(12, 580), textAlign: 'right', flex: .5 }}>{item.ble_temp} F</Text>
 
                         </View>
@@ -49,7 +50,7 @@ function Item({ item }) {
 
                     </View>
 
-                    
+
                     <Text style={{ color: "#949494", alignSelf: 'flex-end', marginTop: 10, fontSize: RFPercentage(1.5) }}>{item.ble_dt}</Text>
                 </View>
 
@@ -63,10 +64,11 @@ class TempratureHistoryTab extends Component {
 
     constructor(props) {
         super(props);
-         this.tempHistory = this.tempHistory.bind(this);
+        this.tempHistory = this.tempHistory.bind(this);
         this.state = {
-            url: 'http://process.trackany.live/mobileapp/native/getBleHistory.php?'
-          
+            url: 'http://process.trackany.live/mobileapp/native/getBleHistory.php?',
+            isnoDataVisible: false
+
         };
     }
 
@@ -95,6 +97,21 @@ class TempratureHistoryTab extends Component {
 
     }
 
+    ListEmpty = () => {
+        return (
+          //View to show when list is empty
+    
+          <View style={styles.container}>
+            {
+              this.state.isnoDataVisible ?
+                <Text style={{ textAlign: 'center' }}>No Data Found</Text>
+                : null
+            }
+          </View>
+    
+        );
+      };
+
     tempHistory() {
 
         var url = this.state.url + 'ble_mac=' + this.state.mac_address;
@@ -109,11 +126,16 @@ class TempratureHistoryTab extends Component {
             .then(responseData => {
                 this.hideLoading();
 
-                if (responseData.status == '0') {
-                    alert(responseData.message);
-                } else {
+             
+
+
+                if (responseData == '') {
+                    this.setState({ isnoDataVisible: true })
+                  } else {
+                    this.setState({ isnoDataVisible: false })
                     this.setState({ data: responseData });
-                }
+        
+                  }
 
                 console.log('response object:', responseData);
             })
@@ -163,10 +185,18 @@ class TempratureHistoryTab extends Component {
 
                 </View>
 
+                {this.state.loading && (
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#0094CD" />
+                    </View>
+                )}
+
 
                 <FlatList
                     style={{ flex: 1 }}
                     data={this.state.data}
+
+
 
                     renderItem={({ item }) => (
                         <TouchableWithoutFeedback>
@@ -181,6 +211,8 @@ class TempratureHistoryTab extends Component {
                     keyExtractor={item => item.time}
                     ListEmptyComponent={this.ListEmpty}
                 />
+
+
 
                 {/* </ScrollView> */}
 
@@ -253,6 +285,7 @@ class TempratureHistoryTab extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        justifyContent:'center', 
         backgroundColor: '#F6F9FE'
     },
     loading: {

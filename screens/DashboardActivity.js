@@ -22,7 +22,7 @@ import Eddystone from "@lg2/react-native-eddystone";
 import DeviceInfo from 'react-native-device-info';
 import AsyncStorage from '@react-native-community/async-storage';
 import BackgroundJob from 'react-native-background-actions';
-import Geolocation from 'react-native-geolocation-service';
+//import Geolocation from 'react-native-geolocation-service';
 import BluetoothStateManager from 'react-native-bluetooth-state-manager';
 
 var data = [];
@@ -95,15 +95,16 @@ class DashboardActivity extends Component {
         this.devicelist = this.devicelist.bind(this);
         this.onTelemetry = this.onTelemetry.bind(this);
         this.callApi = this.callApi.bind(this);
+        this.dashboardCall = this.dashboardCall.bind(this);
         this.state = {
             data: [],
             date: '',
             url: 'http://process.trackany.live/asset_process/device_received_data_eddystone.php?SubscriberName=Zone/',
             devicelisturl: 'http://process.trackany.live/mobileapp/native/mBLEdevice.php?',
+            dashboardurl: 'http://process.trackany.live/mobileapp/native/getNotifications.php?',
             temp: '',
             heartRate: '',
             oxygen: ''
-
         };
     }
 
@@ -124,8 +125,18 @@ class DashboardActivity extends Component {
 
     componentDidMount() {
 
+        
         deviceId = DeviceInfo.getUniqueId();
         console.log('device id ===' + deviceId)
+        this.requestLocationPermission()
+       // this.showLoading();
+        // AsyncStorage.getItem('@mac_address').then((mac_address) => {
+        //     if (mac_address) {
+        //         this.setState({ mac_address: mac_address });
+        //         console.log("mac data ====" + this.state.mac_address);
+        //         this.dashboardCall();
+        //     }
+        // });
 
 
         AsyncStorage.getItem('@temp').then((temp) => {
@@ -215,7 +226,29 @@ class DashboardActivity extends Component {
     }
 
 
+ requestLocationPermission() 
+    {
+      try {
+        const granted =  PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+          //  'title': 'Example App',
+           // 'message': 'Example App access to your location '
 
+            
+          }
+        )
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+          console.log("You can use the location")
+          alert("You can use the location");
+        } else {
+          console.log("location permission denied")
+          alert("Location permission denied");
+        }
+      } catch (err) {
+        console.warn(err)
+      }
+    }
 
 
     onTelemetry(telemetry) {
@@ -291,6 +324,39 @@ class DashboardActivity extends Component {
         // console.log("strdata ====" + JSON.stringify(strdata));
 
     }
+
+
+    dashboardCall() {
+
+        var url = this.state.dashboardurl + 'ble_mac=' + this.state.mac_address;
+        console.log('url:' + url);
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        })
+            .then(response => response.json())
+            .then(responseData => {
+                this.hideLoading();
+
+                if (responseData.status == '0') {
+                    alert(responseData.message);
+                } else {
+                    this.setState({ data: responseData });
+                }
+
+                console.log('response object:', responseData);
+            })
+            .catch(error => {
+                this.hideLoading();
+                console.error(error);
+            })
+
+            .done();
+    }
+
+
 
     callApi() {
         Toast.show('Api calling', Toast.LONG);

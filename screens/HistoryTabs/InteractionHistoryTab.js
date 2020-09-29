@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Image,
     SafeAreaView,
+    ActivityIndicator,
     TouchableWithoutFeedback,
     ImageBackground
 } from 'react-native';
@@ -56,8 +57,11 @@ class InteractionHistoryTab extends Component {
         this.interactionhistory = this.interactionhistory.bind(this);
         this.state = {
             url: 'http://process.trackany.live/mobileapp/native/getInteractionHistory.php?',
+            isnoDataVisible: false,
         };
     }
+
+
 
 
     showLoading() {
@@ -99,11 +103,15 @@ class InteractionHistoryTab extends Component {
             .then(responseData => {
                 this.hideLoading();
 
-                if (responseData.status == '0') {
-                    alert(responseData.message);
-                } else {
+
+
+                if (responseData == '') {
+                    this.setState({ isnoDataVisible: true })
+                  } else {
+                    this.setState({ isnoDataVisible: false })
                     this.setState({ data: responseData });
-                }
+        
+                  }
 
                 console.log('response object:', responseData);
             })
@@ -114,6 +122,21 @@ class InteractionHistoryTab extends Component {
 
             .done();
     }
+
+    ListEmpty = () => {
+        return (
+          //View to show when list is empty
+    
+          <View style={styles.container}>
+            {
+              this.state.isnoDataVisible ?
+                <Text style={{ textAlign: 'center' }}>No Data Found</Text>
+                : null
+            }
+          </View>
+    
+        );
+      };
 
 
 
@@ -154,6 +177,11 @@ class InteractionHistoryTab extends Component {
 
                 </View>
 
+                {this.state.loading && (
+                    <View style={styles.loading}>
+                        <ActivityIndicator size="large" color="#0094CD" />
+                    </View>
+                )}
 
                 <FlatList
                     style={{ flex: 1 }}
