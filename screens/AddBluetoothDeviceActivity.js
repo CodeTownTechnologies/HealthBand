@@ -59,6 +59,7 @@ class AddBluetoothDeviceActivity extends Component {
     componentDidMount() {
 
 
+
     }
 
     CheckTextInput = () => {
@@ -90,7 +91,6 @@ class AddBluetoothDeviceActivity extends Component {
             alert(stringsoflanguages.please_enter_name);
         }
     };
-
 
 
     addBluetoothDevice() {
@@ -134,10 +134,13 @@ class AddBluetoothDeviceActivity extends Component {
                 this.hideLoading();
                 console.log(err)
             })
+            this.clearText();
 
     }
 
-
+clearText(){
+    this.setState( {name:' '} )
+}
     render() {
         return (
 
@@ -196,10 +199,13 @@ class AddBluetoothDeviceActivity extends Component {
 
                             <TextInput
                                 placeholder="Name of Device"
+                            
                                 placeholderTextColor="#C3C8D1"
                                 underlineColorAndroid="transparent"
                                 style={styles.input}
+      
                                 onChangeText={name => this.setState({ name })}
+                                //value={this.state.name}
                             />
 
 
@@ -245,7 +251,7 @@ class AddBluetoothDeviceActivity extends Component {
                                     },
 
                                 }}
-                                onDateChange={(date) => { this.setState({ date: date }) }}
+                               onDateChange={(date) => { this.setState({ date: date }) }}
                             />
 
                         </View>
@@ -274,8 +280,7 @@ class AddBluetoothDeviceActivity extends Component {
                             style={styles.loginButtonStyle}
                             activeOpacity={.5}
                             onPress={this.CheckTextInput}>
-
-
+                                
                             <Text style={styles.buttonWhiteTextStyle}>Register</Text>
 
                         </TouchableOpacity>
